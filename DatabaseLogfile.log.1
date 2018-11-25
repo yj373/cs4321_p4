@@ -1,0 +1,59 @@
+TIME START 1542647715233 
+Read statement: SELECT * FROM Sailors 
+end 
+time spent： 893ms 
+TIME START 1542647716148 
+Read statement: SELECT Sailors.A FROM Sailors 
+end 
+time spent： 19ms 
+TIME START 1542647716183 
+Read statement: SELECT Boats.F, Boats.D FROM Boats 
+end 
+time spent： 34ms 
+TIME START 1542647716231 
+Read statement: SELECT Reserves.G, Reserves.H FROM Reserves 
+end 
+time spent： 13ms 
+TIME START 1542647716255 
+Read statement: SELECT * FROM Sailors WHERE Sailors.B >= Sailors.C 
+end 
+time spent： 94ms 
+TIME START 1542647716357 
+Read statement: SELECT Sailors.A FROM Sailors WHERE Sailors.B >= Sailors.C 
+end 
+time spent： 45ms 
+TIME START 1542647716429 
+Read statement: SELECT Sailors.A FROM Sailors WHERE Sailors.B >= Sailors.C AND Sailors.B < Sailors.C 
+end 
+time spent： 31ms 
+TIME START 1542647716475 
+Read statement: SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G 
+end 
+time spent： 2453ms 
+TIME START 1542647718948 
+Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D 
+end 
+time spent： 10489ms 
+TIME START 1542647729462 
+Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D AND Sailors.B < 150 
+end 
+time spent： 7206ms 
+TIME START 1542647736700 
+Read statement: SELECT DISTINCT * FROM Sailors 
+end 
+time spent： 292ms 
+TIME START 1542647737005 
+Read statement: SELECT * FROM Sailors AS S1, Sailors AS S2 WHERE S1.A < S2.A 
+end 
+time spent： 5789ms 
+TIME START 1542647742807 
+Read statement: SELECT B.F, B.D FROM Boats AS B ORDER BY B.D 
+end 
+time spent： 80ms 
+TIME START 1542647742904 
+Read statement: SELECT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
+java.lang.NullPointerException 
+TIME START 1542647752068 
+Read statement: SELECT DISTINCT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
+end 
+time spent： 5810ms 
