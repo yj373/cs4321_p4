@@ -1,1 +1,1 @@
-SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A <> Reserves.G AND Sailors.A = 10 AND Reserves.H = Boats.D;
+SELECT DISTINCT * FROM Sailors S, Reserves R, Boats B WHERE S.A = R.G AND R.G = B.D AND S.A > R.C AND S.B = 10 AND S.A < 10 AND B.D >= 15;

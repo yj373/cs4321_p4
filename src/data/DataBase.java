@@ -27,8 +27,11 @@ public class DataBase {
 	
 	/* p3 update: get the path of index-info */
 	private String indexInfo_path = Dynamic_properties.indexInfoPath;
-	private HashMap<String, TableStat> statistics; // store original upper bounds and lower bounds
-	private HashMap<String, Integer> indexLeaves; // store the number of leaf pages of indexed columns
+    
+	/* p4 update: the statistics info (TableStat) of a given table (String) is stored in the map */
+    private Map<String, TableStat> statistics = new HashMap<>();
+    /* store the number of leaf pages of indexed columns, String is tableName.attribute */
+	private HashMap<String, Integer> indexLeaves; 
 	
 	
 	/*Track the address of each table
@@ -131,7 +134,7 @@ public class DataBase {
 	/**
 	 * get the statistics
 	 */
-	public HashMap<String, TableStat> getStatistics(){
+	public Map<String, TableStat> getStatistics(){
 		return statistics;
 	}
 	/**

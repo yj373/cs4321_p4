@@ -235,8 +235,11 @@ public class IndexTreeBuilder {
 		/*rewrite root node*/
 		headerNode.getDatalist().add(pageIndex);
 		headerNode.getDatalist().add(leafNumber);
+		
+		/*update records in Database*/
+		DataBase.getInstance().updateIndexLeaves(tableName + attribute, leafNumber);
+		
 		headerNode.getDatalist().add(order);
-
 		write.reWritePage(0, headerNode.getDatalist());
 		write.close();
 
