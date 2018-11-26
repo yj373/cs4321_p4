@@ -15,6 +15,7 @@ public class Main {
 		
 		int queryState = SQLInterpreter.init(args);
 		if (queryState == 1) {
+			SQLInterpreter.statisticsCalculation();
 			SQLInterpreter.BuildQueryPlan();
 		}
 		
