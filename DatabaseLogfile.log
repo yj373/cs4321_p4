@@ -1,8 +1,1 @@
-<<<<<<< HEAD
-Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A <> Reserves.G AND Sailors.A = 10 AND Reserves.H = Boats.D 
-=======
-TIME START 1543206622375 
-Read statement: SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G ORDER BY Sailors.C 
-end 
-time spent： 2463ms 
->>>>>>> 50d6588556213ef5ff95343c8810aa51b2bc476d
+Read statement: SELECT DISTINCT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.G = B.D AND S.A > R.C AND S.B = 10 AND S.A < 10 AND B.D >= 15 
