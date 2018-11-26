@@ -67,7 +67,18 @@ public class DataBase {
 			}
 			br.close();
 			
-			
+			BufferedReader brIndex = new BufferedReader(new FileReader(indexInfo_path));
+			String lineIndex = brIndex.readLine();
+			while(lineIndex !=null) {
+				String[] res = lineIndex.split("\\s+");
+				if (res.length == 4) {
+					/*IndexNode : column, isClustered, order*/
+					IndexNote indexInfo = new IndexNote(res[1], Integer.valueOf(res[2]) == 1, Integer.valueOf(res[3]));
+					indexInfoRoster.put(res[0], indexInfo);
+				}
+				lineIndex = brIndex.readLine();
+			}
+			brIndex.close();
 			
 		}catch(IOException e) {
 			System.out.println(e.getMessage());
