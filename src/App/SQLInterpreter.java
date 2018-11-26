@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import data.DataBase;
 import data.Dynamic_properties;
 import data.TableStat;
 import data.Tuple;
@@ -119,11 +120,11 @@ public class SQLInterpreter {
 					}
 				}
 				tableSt.tupleNumber = numTuple;
-				Dynamic_properties.statistics.put(tableInfo, tableSt);
+				DataBase.getInstance().getStatistics().put(tableInfo, tableSt);
 				line = br.readLine();
 			}
 			br.close();
-			writeToDataBase(Dynamic_properties.statistics);
+			writeToDataBase(DataBase.getInstance().getStatistics());
 		}catch(IOException e) {
 			System.out.println(e.getMessage());
 		} catch (Exception e) {

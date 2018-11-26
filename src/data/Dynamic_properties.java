@@ -25,8 +25,6 @@ public class Dynamic_properties {
 	public static String indexedPath = inputPath + "/db/indexes";
 	public static String outputPath = "src/samples/output";
 	public static String tempPath = "src/samples/temp";
-	// the statistics info (TableStat) of a given table (String) is stored in the map 
-	public static Map<String, TableStat> statistics = new HashMap<>();
 	
 	/**
 	 * set input and output path according to pass in parameters
