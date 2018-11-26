@@ -1,10 +1,12 @@
 package App;
 
+import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import visitors.ExpressionClassifyVisitor;
 import visitors.LogicalPlanVisitor;
+import visitors.UnionFindExpressionVisitor;
 import logicalOperators.*;
 
 public class LogicalPlanBuilder {
@@ -51,6 +53,18 @@ public class LogicalPlanBuilder {
 	// add conditions to the former built joinQueryPlan, only called inside buildQueryPlan() 
 	private void addQueryCondition() {
 		// get the expression conditions from ps.
+		
+		
+		UnionFindExpressionVisitor visitor = new UnionFindExpressionVisitor();
+		if (ps != null) {
+			Expression origin = ps.getWhere();
+			
+		    if (origin != null) {
+		    		origin.accept(visitor);
+		    }
+		}
+		
+		
 		ExpressionClassifyVisitor classifier = new ExpressionClassifyVisitor();
 		classifier.classify(ps);
 		
