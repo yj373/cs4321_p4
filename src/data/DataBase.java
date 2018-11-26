@@ -27,6 +27,8 @@ public class DataBase {
 	
 	/* p3 update: get the path of index-info */
 	private String indexInfo_path = Dynamic_properties.indexInfoPath;
+	private HashMap<String, TableStat> statistics; // store original upper bounds and lower bounds
+	private HashMap<String, Integer> indexLeaves; // store the number of leaf pages of indexed columns
 	
 	
 	/*Track the address of each table
@@ -79,6 +81,8 @@ public class DataBase {
 				lineIndex = brIndex.readLine();
 			}
 			brIndex.close();
+			statistics = new HashMap<String, TableStat>();
+			indexLeaves = new HashMap<String, Integer>();
 			
 		}catch(IOException e) {
 			System.out.println(e.getMessage());
@@ -123,4 +127,30 @@ public class DataBase {
 	public Map<String, IndexNote> getIndexInfos() {
 		return indexInfoRoster;
 	}
+	
+	/**
+	 * get the statistics
+	 */
+	public HashMap<String, TableStat> getStatistics(){
+		return statistics;
+	}
+	/**
+	 * get the statistics
+	 */
+	public HashMap<String, Integer> getIndexLeaves(){
+		return indexLeaves;
+	}
+	/**
+	 * Update the statistics
+	 */
+	public void updateStatistics(String key, TableStat value) {
+		this.statistics.put(key, value);
+	}
+	/**
+	 * Update the indexLeaves
+	 */
+	public void updateIndexLeaves(String key, int value) {
+		this.indexLeaves.put(key, value);
+	}
+	
 }
