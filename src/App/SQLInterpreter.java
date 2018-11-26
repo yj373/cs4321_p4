@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import data.Dynamic_properties;
@@ -118,7 +119,7 @@ public class SQLInterpreter {
 					}
 				}
 				tableSt.tupleNumber = numTuple;
-				Dynamic_properties.statistics.add(tableSt);
+				Dynamic_properties.statistics.put(tableInfo, tableSt);
 				line = br.readLine();
 			}
 			br.close();
@@ -135,7 +136,7 @@ public class SQLInterpreter {
     * 
     * @param statistics
     */
-	private static void writeToDataBase(List<TableStat> statistics) {
+	private static void writeToDataBase(Map<String, TableStat> statistics) {
 		// Initialize the path of stats.txt
 		StringBuilder statPath = new StringBuilder(Dynamic_properties.inputPath);
         statPath.append("/db/stats.txt");
@@ -154,7 +155,7 @@ public class SQLInterpreter {
 		// Initialize a buffer writer, use it to write statistics, then close it.
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(statsFile));
-			for (TableStat tbst : statistics) {
+			for (TableStat tbst : statistics.values()) {
 				bw.write(tbst.toString() + '\n');
 			}
 			bw.close();
