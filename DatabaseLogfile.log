@@ -1,1 +1,8 @@
+<<<<<<< HEAD
 Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A <> Reserves.G AND Sailors.A = 10 AND Reserves.H = Boats.D 
+=======
+TIME START 1543206622375 
+Read statement: SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G ORDER BY Sailors.C 
+end 
+time spent： 2463ms 
+>>>>>>> 50d6588556213ef5ff95343c8810aa51b2bc476d

@@ -258,7 +258,7 @@ public class V2ExternalSortOperator extends Operator{
 						flag = true;
 						res = cand;
 						currInd = j;
-						j = currInd + 1;
+						break;
 					}
 					j++;
 				}
