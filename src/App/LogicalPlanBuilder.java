@@ -53,8 +53,6 @@ public class LogicalPlanBuilder {
 	// add conditions to the former built joinQueryPlan, only called inside buildQueryPlan() 
 	private void addQueryCondition() {
 		// get the expression conditions from ps.
-		
-		
 		UnionFindExpressionVisitor visitor = new UnionFindExpressionVisitor();
 		if (ps != null) {
 			Expression origin = ps.getWhere();
@@ -67,6 +65,7 @@ public class LogicalPlanBuilder {
 		
 		ExpressionClassifyVisitor classifier = new ExpressionClassifyVisitor();
 		classifier.classify(ps);
+		//classifier.classify(visitor.generateExpression());  // use when test UnionFindExpressionVisitor.
 		
 		// traverse from top to the bottom of the query plan, put conditions to its place.
 		LogicalPlanVisitor Venture = new LogicalPlanVisitor(classifier);

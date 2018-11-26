@@ -1,5 +1,10 @@
 package data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * 
  * This class provides function:
@@ -20,7 +25,6 @@ public class Dynamic_properties {
 	public static String indexedPath = inputPath + "/db/indexes";
 	public static String outputPath = "src/samples/output";
 	public static String tempPath = "src/samples/temp";
-
 	
 	/**
 	 * set input and output path according to pass in parameters

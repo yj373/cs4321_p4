@@ -27,6 +27,11 @@ public class DataBase {
 	
 	/* p3 update: get the path of index-info */
 	private String indexInfo_path = Dynamic_properties.indexInfoPath;
+    
+	/* p4 update: the statistics info (TableStat) of a given table (String) is stored in the map */
+    private Map<String, TableStat> statistics = new HashMap<>();
+    /* store the number of leaf pages of indexed columns, String is tableName.attribute */
+	private HashMap<String, Integer> indexLeaves; 
 	
 	
 	/*Track the address of each table
@@ -79,6 +84,8 @@ public class DataBase {
 				lineIndex = brIndex.readLine();
 			}
 			brIndex.close();
+			statistics = new HashMap<String, TableStat>();
+			indexLeaves = new HashMap<String, Integer>();
 			
 		}catch(IOException e) {
 			System.out.println(e.getMessage());
@@ -87,7 +94,7 @@ public class DataBase {
 	}
 	
 	/**
-	 * get the instance of this Databse
+	 * get the instance of this Database
 	 * @return a thread safe instance
 	 */
 	public static DataBase getInstance() {
@@ -123,4 +130,30 @@ public class DataBase {
 	public Map<String, IndexNote> getIndexInfos() {
 		return indexInfoRoster;
 	}
+	
+	/**
+	 * get the statistics
+	 */
+	public Map<String, TableStat> getStatistics(){
+		return statistics;
+	}
+	/**
+	 * get the statistics
+	 */
+	public HashMap<String, Integer> getIndexLeaves(){
+		return indexLeaves;
+	}
+	/**
+	 * Update the statistics
+	 */
+	public void updateStatistics(String key, TableStat value) {
+		this.statistics.put(key, value);
+	}
+	/**
+	 * Update the indexLeaves
+	 */
+	public void updateIndexLeaves(String key, int value) {
+		this.indexLeaves.put(key, value);
+	}
+	
 }

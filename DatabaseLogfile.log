@@ -1,1 +1,8 @@
+<<<<<<< HEAD
 Read statement: SELECT DISTINCT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.G = B.D AND S.A > R.C AND S.B = 10 AND S.A < 10 AND B.D >= 15 
+=======
+TIME START 1543264399863 
+Read statement: SELECT * FROM Sailors, Boats WHERE Sailors.A > 9900 AND Boats.E > 9000 
+end 
+time spent： 2387ms 
+>>>>>>> b89ed1983eabd94422a440a9097a85990c9e5346

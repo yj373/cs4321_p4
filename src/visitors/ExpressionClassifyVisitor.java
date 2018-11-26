@@ -93,6 +93,12 @@ public class ExpressionClassifyVisitor implements ExpressionVisitor{
 		    }
 		}
 	}
+	
+	public void classify(Expression exp) {
+	    if (exp != null) {
+	        exp.accept(this);
+	    }
+	}
 
 	/** visit the EqualsTo expression
 	 *  @param arg0: the EqualsTo expression

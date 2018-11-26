@@ -1,17 +1,26 @@
 package App;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
+import data.DataBase;
 import data.Dynamic_properties;
+import data.TableStat;
+import data.Tuple;
 import net.sf.jsqlparser.parser.CCJSqlParser;
 import net.sf.jsqlparser.statement.select.Select;
 import operators.Operator;
 import util.GlobalLogger;
+import util.TupleReader;
 import visitors.PhysicalPlanVisitor;
 
 
@@ -63,7 +72,7 @@ public class SQLInterpreter {
 				}
 				
 				br.close();
-				return queryState;
+				//return queryState;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -73,6 +82,88 @@ public class SQLInterpreter {
 		
 	}
 	
+	/**
+	 * get statistics of all relations in db.
+	 */
+	public static void statisticsCalculation() {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(Dynamic_properties.schemaPath));
+			String line = br.readLine();
+			while(line !=null) {
+				String[] res = line.split("\\s+");
+				String tableInfo = res[0];
+				List<String> columns = new LinkedList<String>();
+				for (int i = 1; i<res.length; i++) {
+					columns.add(res[i]);
+				}
+				TableStat tableSt = new TableStat(tableInfo, columns);
+				TupleReader tr = new TupleReader(tableInfo);
+				Tuple tp;
+				int numTuple = 0;
+				while((tp = tr.readNextTuple()) != null) {
+					numTuple++;
+					long[] data = tp.getData();
+					for (int i = 0; i < data.length; i++) {
+						if (tableSt.lowerBound.size() < i + 1) {
+							tableSt.lowerBound.add(data[i]);
+						} else {
+							long val = Math.min(tableSt.lowerBound.get(i), data[i]);
+							tableSt.lowerBound.set(i, val);
+						}
+						
+						if (tableSt.upperBound.size() < i + 1) {
+							tableSt.upperBound.add(data[i]);
+						} else {
+							long val = Math.max(tableSt.upperBound.get(i), data[i]);
+							tableSt.upperBound.set(i, val);
+						}
+					}
+				}
+				tableSt.tupleNumber = numTuple;
+				DataBase.getInstance().getStatistics().put(tableInfo, tableSt);
+				line = br.readLine();
+			}
+			br.close();
+			writeToDataBase(DataBase.getInstance().getStatistics());
+		}catch(IOException e) {
+			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+   /**
+    * 
+    * @param statistics
+    */
+	private static void writeToDataBase(Map<String, TableStat> statistics) {
+		// Initialize the path of stats.txt
+		StringBuilder statPath = new StringBuilder(Dynamic_properties.inputPath);
+        statPath.append("/db/stats.txt");
+        File statsFile = new File(statPath.toString());
+        // if statsFile not exist, create it;
+        // if it exists already, delete its content;
+		if (!statsFile.exists()) {
+			try {
+				statsFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		statsFile.delete();
+		
+		// Initialize a buffer writer, use it to write statistics, then close it.
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(statsFile));
+			for (TableStat tbst : statistics.values()) {
+				bw.write(tbst.toString() + '\n');
+			}
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Build query tree for every query
