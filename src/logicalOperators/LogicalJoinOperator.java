@@ -1,5 +1,11 @@
 package logicalOperators;
 
+import java.util.List;
+import java.util.Map;
+
+import data.TablePair;
+import net.sf.jsqlparser.expression.Expression;
+import visitors.ExpressionClassifyVisitor;
 import visitors.LogicalPlanVisitor;
 import visitors.PhysicalPlanVisitor;
 
@@ -13,6 +19,19 @@ import visitors.PhysicalPlanVisitor;
  *
  */
 public class LogicalJoinOperator extends LogicalOperator {
+	
+	/** p4 update: logical joinOperator which contains a list of children
+	 * and has no specific join Order*/
+	public List<LogicalOperator> childList;
+	private Map<TablePair, Expression> joinConditions;
+	
+	/** p4 update: logical joinOperator which contains a list of children
+	 * and has no specific join Order*/
+	public LogicalJoinOperator(List<LogicalOperator> childList, ExpressionClassifyVisitor classifier) {
+		this.childList = childList;
+		this.joinConditions = classifier.getJoinConditions();
+	}
+	
     /**
      * Construct a LogicalJoinOperator instance, with its left child to be op1, and 
      * right child to be op2.
@@ -32,6 +51,20 @@ public class LogicalJoinOperator extends LogicalOperator {
 		}
     	leftChild = op1;
     	rightChild = op2;
+	}
+	
+	/**
+	 * p4 update: get the childList of this abstact logical JoinOperator
+	 */
+	public List<LogicalOperator> getChildList() {
+		return this.childList;
+	}
+	
+	/**
+	 * p4 update: get the joinConditions of the abstract logical JoinOperator
+	 */
+	public Map<TablePair, Expression> getjoinConditions() {
+		return this.joinConditions;
 	}
 	
 	/**
