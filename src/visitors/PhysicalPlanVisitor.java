@@ -103,6 +103,7 @@ public class PhysicalPlanVisitor {
 		Expression expression = scOp.getCondition();
 		SelectDeterminator sd = new SelectDeterminator(scOp);
 		String selectColumn = sd.selectColumn();
+		boolean clustered = sd.checkClustred(selectColumn);
 		if(selectColumn != null) {
 			IndexExpressionVisitor indVisitor = new IndexExpressionVisitor(scOp, selectColumn);
 			indVisitor.Classify();
@@ -111,7 +112,7 @@ public class PhysicalPlanVisitor {
 			Expression unindexedCondition = indVisitor.getUnIndexedCondition();
 			ScanOperator scan = new ScanOperator(tableName, tableAliase, unindexedCondition);
 			if(!(bounds[0]==null && bounds[1]==null)) {
-				IndexScanOperator indScan = new IndexScanOperator(tableName, tableAliase, column, bounds[1], bounds[0]);
+				IndexScanOperator indScan = new IndexScanOperator(tableName, tableAliase, column, bounds[1], bounds[0], clustered);
 				scan.setLeftChild(indScan);
 			}
 			childList.add(scan);

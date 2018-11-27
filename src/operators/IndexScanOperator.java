@@ -75,7 +75,7 @@ public class IndexScanOperator extends Operator{
 	 * eg: tableName: Sailors; tableAliase: S; indexColumn A; 
 	 * When the constructor is called, Sailors.A must have been indexed.
 	 */
-	public IndexScanOperator(String tableName, String tableAliase, String indexColumn, Integer lowerBound, Integer upperBound) {
+	public IndexScanOperator(String tableName, String tableAliase, String indexColumn, Integer lowerBound, Integer upperBound, boolean clustered) {
 		/*Instantiate the table Name and aliase and DataBase-related field*/
 		this.tableName = tableName;
 		this.tableAddress = DataBase.getInstance().getAddresses(tableName);
@@ -92,8 +92,7 @@ public class IndexScanOperator extends Operator{
 		}
 		
 		/*Decide the index we are going to search is Clustered or Not */
-		isClustered = DataBase.getInstance().getIndexInfos().
-				get(tableName).isClustered();	
+		isClustered = clustered;	
 		this.upperBound = upperBound == null ? Integer.MAX_VALUE : upperBound;
 		this.lowerBound = lowerBound == null ? Integer.MIN_VALUE : lowerBound;
 		
