@@ -170,7 +170,7 @@ public class SortOperator extends Operator{
 	}
 	
 	
-	public static void main(String[] args) throws JSQLParserException {
+//	public static void main(String[] args) throws JSQLParserException {
 //		// TODO Auto-generated method stub
 //		String[] statements = new String[1];
 //		
@@ -201,6 +201,6 @@ public class SortOperator extends Operator{
 //			Tuple t = es.getNextTuple();
 //			t.printData();
 
-	}
+//	}
 
 }

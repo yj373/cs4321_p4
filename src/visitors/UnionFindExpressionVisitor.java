@@ -201,7 +201,6 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 
 	}
 
-	//TEST
 	public static void main(String[] args) throws FileNotFoundException, ParseException {
 
 		CCJSqlParser parser = new CCJSqlParser(new FileReader(Dynamic_properties.queryPath));
@@ -226,6 +225,7 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 			System.out.println("finish2");
 		}
 	}
+
 
 	@Override
 	/**

@@ -22,14 +22,13 @@ public class LogicalJoinOperator extends LogicalOperator {
 	
 	/** p4 update: logical joinOperator which contains a list of children
 	 * and has no specific join Order*/
-	public List<LogicalOperator> childList;
+	public List<LogicalOperator> childList = null;
 	private Map<TablePair, Expression> joinConditions;
 	
 	/** p4 update: logical joinOperator which contains a list of children
 	 * and has no specific join Order*/
-	public LogicalJoinOperator(List<LogicalOperator> childList, ExpressionClassifyVisitor classifier) {
+	public LogicalJoinOperator(List<LogicalOperator> childList) {
 		this.childList = childList;
-		this.joinConditions = classifier.getJoinConditions();
 	}
 	
     /**
@@ -59,6 +58,14 @@ public class LogicalJoinOperator extends LogicalOperator {
 	public List<LogicalOperator> getChildList() {
 		return this.childList;
 	}
+	
+	/**
+	 * p4 update: set the joinConditions with ExpressionClassifyVisitor classifier
+	 */
+	public void setJoinConditions(Map<TablePair, Expression> joinConditions) {
+		this.joinConditions = joinConditions;
+	}
+	
 	
 	/**
 	 * p4 update: get the joinConditions of the abstract logical JoinOperator

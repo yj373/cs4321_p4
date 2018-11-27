@@ -1,8 +1,2 @@
-<<<<<<< HEAD
-Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D AND Sailors.B < 150 
-Read statement: SELECT DISTINCT * FROM Sailors 
-Read statement: SELECT * FROM Sailors AS S1, Sailors AS S2 WHERE S1.A < S2.A 
-Read statement: SELECT B.F, B.D FROM Boats AS B ORDER BY B.D 
-Read statement: SELECT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
-=======
->>>>>>> ae3ea4383d56829cc2e3a8e4c1756575d529d6f9
+TIME START 1543283617582 
+Read statement: SELECT * FROM Sailors, Boats WHERE Sailors.A >= 9901 AND Boats.E >= 9001 

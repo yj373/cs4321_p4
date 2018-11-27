@@ -66,6 +66,19 @@ public class LogicalPlanVisitor {
 	 */
 	
 	public void visit(LogicalJoinOperator jnOp) {
+		/** p4 update: if it is an abstract logical join operator, 
+		 * that is, a logical join with multiple children*/
+		if (jnOp.getChildList() != null) {  
+			for (LogicalOperator op : jnOp.getChildList()) {
+				op.accept(this);
+			}
+			jnOp.setJoinConditions(joinConditions);
+			return;
+		}
+		
+		/**
+		 * p1 - p3 implementation of logical join Operators
+		 */
 		LogicalOperator op1 = jnOp.getLeftChild();
 		if (op1 != null) {
 			op1.accept(this);
