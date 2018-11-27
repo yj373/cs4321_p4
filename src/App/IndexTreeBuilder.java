@@ -44,7 +44,7 @@ public class IndexTreeBuilder {
 	private String indexFilePath;
 	/*store temporary sorted file*/
 	private String clusterFilePath;
-	private Map<String, IndexNote> indexInfoRoster;
+	private Map<String, List<IndexNote>> indexInfoRoster;
 
 
 ////	//main method to test
@@ -92,11 +92,16 @@ public class IndexTreeBuilder {
 		for (String str : indexInfoRoster.keySet()) {
 
 			this.tableName = str;
-			this.order = indexInfoRoster.get(str).getOrder();
-			this.attribute = indexInfoRoster.get(str).getColumn();
-			this.isClustered = indexInfoRoster.get(str).isClustered();
+			List<IndexNote> list = indexInfoRoster.get(str);
+			
+			for (IndexNote cur : list) {
+				this.order = cur.getOrder();
+				this.attribute = cur.getColumn();
+				this.isClustered = cur.isClustered();
 
-			buildHelper();
+				buildHelper();
+			}
+
 
 		}
 	}
