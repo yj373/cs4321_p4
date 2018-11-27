@@ -3,12 +3,15 @@ package visitors;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import data.Dynamic_properties;
+import data.TablePair;
 import data.UfCollection;
 import logicalOperators.LogicalDuplicateEliminationOperator;
 import logicalOperators.LogicalJoinOperator;
@@ -17,6 +20,7 @@ import logicalOperators.LogicalProjectOperator;
 import logicalOperators.LogicalScanOperator;
 import logicalOperators.LogicalSortOperator;
 import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SelectItem;
@@ -44,13 +48,14 @@ import util.SelectDeterminator;
 public class PhysicalPlanVisitor {
 	private Operator root;
 	private LinkedList<Operator> childList;
-	private LinkedList<String> tables;//Store names of joined tables (tableNames)
+	private LinkedList<String> tableNames;//Store names of joined tables 
+	private LinkedList<String> tableAliases;//Store aliases of joined tables
 	private int queryNum;
 	private int joinType=0; // 0: TNLJ, 1: BNLJ, 2: SMJ
 	private int sortType=0; // 0: in-memory, 1: external
 	private int indexState=0; // 0: full-scan, 1: use indexes 
-	private int bnljBufferSize;
-	private int exSortBufferSize;
+	private int bnljBufferSize = 5;//use 5 pages for BNLJ
+	private int exSortBufferSize = 6;//use 6 pages for external sort
 	private UfCollection ufc;
 	//Constructor
 	public PhysicalPlanVisitor() {
@@ -121,12 +126,14 @@ public class PhysicalPlanVisitor {
 				scan.setLeftChild(indScan);
 			}
 			childList.add(scan);
-			tables.add(tableName);
+			tableNames.add(tableName);
+			tableAliases.add(tableAliase);
 			root = scan;
 		}else {
 			ScanOperator scan = new ScanOperator(tableName, tableAliase, expression);
 			childList.add(scan);
-			tables.add(tableName);
+			tableNames.add(tableName);
+			tableAliases.add(tableAliase);
 			root = scan;
 		}
 		
@@ -151,57 +158,143 @@ public class PhysicalPlanVisitor {
 //			op2.accept(this);
 //		}
 		List<LogicalOperator> children = jnOp.getChildList();
-		if (children != null) {
+		if (!children.isEmpty()) {
 			for(LogicalOperator op : children) {
 				op.accept(this);
 			}
 		}
-		JoinOrderDeterminator jd = new JoinOrderDeterminator(this.tables);
+		
+		
+		JoinOrderDeterminator jd = new JoinOrderDeterminator(this.tableNames);
 		List<Integer> joinOrder = jd.getOrder();
-		Expression exp = jnOp.getCondition();
-		Operator right = childList.pollLast();
-		Operator left = childList.pollLast();
-		
-		
-		if(joinType == 0) {
-			JoinOperator join1 = new JoinOperator(left, right, exp);
-			childList.add(join1);
-			root = join1;
-		}else if (joinType == 1) {
-			BNLJoinOperator join2 = new BNLJoinOperator(left, right, exp, bnljBufferSize);
-			childList.add(join2);
-			root = join2;
-		}else if (joinType == 2) {
-			SMJoinOperator join3 = new SMJoinOperator(left, right, exp);
-			if (sortType == 0) {
-				if (left != null) {
-					Operator originalLeft = left;
-					left = new InMemSortOperator(originalLeft, join3.getLeftSortColumns());			                			
-				}
-				if (right != null) {
-					Operator originalRight = right;
-					right = new InMemSortOperator(originalRight, join3.getRightSortColumns());			
-				}
-			}else if(sortType == 1) {
-				if (left != null) {
-					Operator originalLeft = left;
-					//left = new ExternalSortOperator(queryNum, exSortBufferSize, join3.getLeftSortColumns(), originalLeft.getSchema(), originalLeft);
-					left = new V2ExternalSortOperator(queryNum, exSortBufferSize, join3.getLeftSortColumns(), originalLeft.getSchema(), originalLeft);
-				}
-				if (right != null) {
-					Operator originalRight = right;
-					//right = new ExternalSortOperator(queryNum, exSortBufferSize, join3.getRightSortColumns(), originalRight.getSchema(), originalRight);
-					right = new V2ExternalSortOperator(queryNum, exSortBufferSize, join3.getRightSortColumns(), originalRight.getSchema(), originalRight);		
-
+		LinkedList<Operator> tempChildList = new LinkedList<Operator>();
+		Set<String> tempAllTable = new HashSet<String>();
+		Map<TablePair, Expression> joinConditions = jnOp.getjoinConditions();
+		int leftMostInd = joinOrder.get(0);
+		if(joinOrder.size() > 1) {
+			for(int i = 1; i < joinOrder.size(); i++) {
+				int rightInd = joinOrder.get(i);
+				if (tempChildList.isEmpty()) {
+					Operator left = childList.get(leftMostInd);
+					Operator right = childList.get(rightInd);
+					String leftAlise = tableAliases.get(leftMostInd);
+					String rightAliase = tableAliases.get(rightInd);
+					tempAllTable.add(rightAliase);
+					tempAllTable.add(leftAlise);
+					Expression expr = findExpression(joinConditions, tempAllTable);
+					tempChildList.add(generatePhysicalJoin(left, right, expr));
+					 
+				}else {
+					Operator left = tempChildList.pollLast();
+					Operator right = childList.get(rightInd);
+					String rightAliase = tableAliases.get(rightInd);
+					tempAllTable.add(rightAliase);
+					Expression expr = findExpression(joinConditions, tempAllTable);
+					tempChildList.add(generatePhysicalJoin(left, right, expr));
 				}
 			}
-			join3.setLeftChild(left);
-			join3.setRightChild(right);
-			childList.add(join3);
-			root = join3;
 		}
+		for (int i = 0; i < childList.size(); i++) {
+			childList.remove();
+		}
+		Operator join= tempChildList.pollLast();
+		childList.add(join);
+		root = join;
 		
+		
+		
+//		Expression exp = jnOp.getCondition();
+//		Operator right = childList.pollLast();
+//		Operator left = childList.pollLast();
+//		
+//		
+//		if(joinType == 0) {
+//			JoinOperator join1 = new JoinOperator(left, right, exp);
+//			childList.add(join1);
+//			root = join1;
+//		}else if (joinType == 1) {
+//			BNLJoinOperator join2 = new BNLJoinOperator(left, right, exp, bnljBufferSize);
+//			childList.add(join2);
+//			root = join2;
+//		}else if (joinType == 2) {
+//			SMJoinOperator join3 = new SMJoinOperator(left, right, exp);
+//			if (sortType == 0) {
+//				if (left != null) {
+//					Operator originalLeft = left;
+//					left = new InMemSortOperator(originalLeft, join3.getLeftSortColumns());			                			
+//				}
+//				if (right != null) {
+//					Operator originalRight = right;
+//					right = new InMemSortOperator(originalRight, join3.getRightSortColumns());			
+//				}
+//			}else if(sortType == 1) {
+//				if (left != null) {
+//					Operator originalLeft = left;
+//					//left = new ExternalSortOperator(queryNum, exSortBufferSize, join3.getLeftSortColumns(), originalLeft.getSchema(), originalLeft);
+//					left = new V2ExternalSortOperator(queryNum, exSortBufferSize, join3.getLeftSortColumns(), originalLeft.getSchema(), originalLeft);
+//				}
+//				if (right != null) {
+//					Operator originalRight = right;
+//					//right = new ExternalSortOperator(queryNum, exSortBufferSize, join3.getRightSortColumns(), originalRight.getSchema(), originalRight);
+//					right = new V2ExternalSortOperator(queryNum, exSortBufferSize, join3.getRightSortColumns(), originalRight.getSchema(), originalRight);		
+//
+//				}
+//			}
+//			join3.setLeftChild(left);
+//			join3.setRightChild(right);
+//			childList.add(join3);
+//			root = join3;
+//		}
+//		
 	
+	}
+	
+	
+	/*Get the expression according to allTables, and update joinConditions*/
+	private Expression findExpression(Map<TablePair, Expression> joinConditions, Set<String> allTables) {
+		Expression expr = null;
+		HashSet<TablePair> removeList = new HashSet<TablePair>();
+		for(TablePair tbpir: joinConditions.keySet()) {
+			if (allTables.contains(tbpir.first()) && allTables.contains(tbpir.second())) {
+				if (expr == null) {
+					expr = joinConditions.get(tbpir);
+				} else {
+					expr = new AndExpression(expr, joinConditions.get(tbpir));
+				}
+			    removeList.add(tbpir);
+			}
+		}
+		for (TablePair tbpir: removeList) {
+			joinConditions.remove(tbpir);
+		}
+		return expr;
+		
+	}
+	
+	/*If the expression is an equality condition, return a SMJoinOperator. Otherwise, return a BNLJOperator*/
+	private Operator generatePhysicalJoin(Operator left, Operator right, Expression expr) {
+		EqualityExpressionVisitor eev = new EqualityExpressionVisitor();
+		expr.accept(eev);
+		if (eev.isEqal()) {
+			SMJoinOperator join = new SMJoinOperator(left, right, expr);
+			if (left != null) {
+				Operator originalLeft = left;
+				//left = new ExternalSortOperator(queryNum, exSortBufferSize, join3.getLeftSortColumns(), originalLeft.getSchema(), originalLeft);
+				left = new V2ExternalSortOperator(queryNum, exSortBufferSize, join.getLeftSortColumns(), originalLeft.getSchema(), originalLeft);
+			}
+			if (right != null) {
+				Operator originalRight = right;
+				//right = new ExternalSortOperator(queryNum, exSortBufferSize, join3.getRightSortColumns(), originalRight.getSchema(), originalRight);
+				right = new V2ExternalSortOperator(queryNum, exSortBufferSize, join.getRightSortColumns(), originalRight.getSchema(), originalRight);		
+
+			}
+			join.setLeftChild(left);
+			join.setRightChild(right);
+			return join;
+		}else {
+			BNLJoinOperator join = new BNLJoinOperator(left, right, expr, bnljBufferSize);
+			return join;
+		}
 	}
 	
 	/**

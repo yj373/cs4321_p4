@@ -40,11 +40,11 @@ public class SelectDeterminator {
 		if(indexInfoRoster.containsKey(tableName)) {
 			List<IndexNote> indexedColumns = indexInfoRoster.get(tableName);
 			for (IndexNote in : indexedColumns) {
-				StringBuilder sb = new StringBuilder();
-				sb.append(tableName);
-				sb.append(".");
-				sb.append(in.getColumn());
-				indMap.put(sb.toString(), in);
+//				StringBuilder sb = new StringBuilder();
+//				sb.append(tableName);
+//				sb.append(".");
+//				sb.append(in.getColumn());
+				indMap.put(in.getColumn(), in);
 				
 			}
 		}
@@ -70,6 +70,9 @@ public class SelectDeterminator {
 				long lBound2 = uEle.getLowerBound();
 				long uBound2 = uEle.getUpperBound();
 				float reFactor = (uBound2-lBound2)/(uBound-lBound);
+				redMap.put(key, reFactor);
+			}else {
+				float reFactor = (float)1.0;
 				redMap.put(key, reFactor);
 			}
 		}

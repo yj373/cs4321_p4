@@ -29,6 +29,14 @@ public class LogicalJoinOperator extends LogicalOperator {
 	 * and has no specific join Order*/
 	public LogicalJoinOperator(List<LogicalOperator> childList) {
 		this.childList = childList;
+		if (!childList.isEmpty()) {
+			for (LogicalOperator op : childList) {
+				for (String e : op.getAllTable()) {
+					this.allTable.add(e);
+				}
+			}
+		}
+		
 	}
 	
     /**
