@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import data.Dynamic_properties;
+import data.UfCollection;
 import logicalOperators.LogicalDuplicateEliminationOperator;
 import logicalOperators.LogicalJoinOperator;
 import logicalOperators.LogicalOperator;
@@ -32,6 +33,7 @@ import operators.ScanOperator;
 import operators.SortOperator;
 import operators.V2ExternalSortOperator;
 import util.GlobalLogger;
+import util.JoinOrderDeterminator;
 import util.SelectDeterminator;
 /**
  * Visit the logical plan and construct a physical operator 
@@ -42,19 +44,22 @@ import util.SelectDeterminator;
 public class PhysicalPlanVisitor {
 	private Operator root;
 	private LinkedList<Operator> childList;
+	private LinkedList<String> tables;//Store names of joined tables (tableNames)
 	private int queryNum;
 	private int joinType=0; // 0: TNLJ, 1: BNLJ, 2: SMJ
 	private int sortType=0; // 0: in-memory, 1: external
 	private int indexState=0; // 0: full-scan, 1: use indexes 
 	private int bnljBufferSize;
 	private int exSortBufferSize;
+	private UfCollection ufc;
 	//Constructor
 	public PhysicalPlanVisitor() {
 		this.childList = new LinkedList<Operator>();
 	}
-	public PhysicalPlanVisitor(int qN) {
+	public PhysicalPlanVisitor(int qN, UfCollection u) {
 		this.childList = new LinkedList<Operator>();
 		this.queryNum = qN;
+		this.ufc = u;
 //		try {
 //			BufferedReader br = new BufferedReader(new FileReader(Dynamic_properties.configuePath));
 //			String joinInfo = br.readLine();
@@ -101,9 +106,9 @@ public class PhysicalPlanVisitor {
 		String tableName = scOp.getTableName();
 		String tableAliase = scOp.getTableAliase();
 		Expression expression = scOp.getCondition();
-		SelectDeterminator sd = new SelectDeterminator(scOp);
+		SelectDeterminator sd = new SelectDeterminator(scOp, ufc);
 		String selectColumn = sd.selectColumn();
-		boolean clustered = sd.checkClustred(selectColumn);
+		boolean clustered = sd.checkClustered(selectColumn);
 		if(selectColumn != null) {
 			IndexExpressionVisitor indVisitor = new IndexExpressionVisitor(scOp, selectColumn);
 			indVisitor.Classify();
@@ -116,10 +121,12 @@ public class PhysicalPlanVisitor {
 				scan.setLeftChild(indScan);
 			}
 			childList.add(scan);
+			tables.add(tableName);
 			root = scan;
 		}else {
 			ScanOperator scan = new ScanOperator(tableName, tableAliase, expression);
 			childList.add(scan);
+			tables.add(tableName);
 			root = scan;
 		}
 		
@@ -135,17 +142,26 @@ public class PhysicalPlanVisitor {
 	 * @throws Exception 
 	 */
 	public void visit(LogicalJoinOperator jnOp) {
-		LogicalOperator op1 = jnOp.getLeftChild();
-		if (op1 != null) {
-			op1.accept(this);
+//		LogicalOperator op1 = jnOp.getLeftChild();
+//		if (op1 != null) {
+//			op1.accept(this);
+//		}
+//		LogicalOperator op2 = jnOp.getRightChild();
+//		if (op2 != null) {
+//			op2.accept(this);
+//		}
+		List<LogicalOperator> children = jnOp.getChildList();
+		if (children != null) {
+			for(LogicalOperator op : children) {
+				op.accept(this);
+			}
 		}
-		LogicalOperator op2 = jnOp.getRightChild();
-		if (op2 != null) {
-			op2.accept(this);
-		}
+		JoinOrderDeterminator jd = new JoinOrderDeterminator(this.tables);
+		List<Integer> joinOrder = jd.getOrder();
 		Expression exp = jnOp.getCondition();
 		Operator right = childList.pollLast();
 		Operator left = childList.pollLast();
+		
 		
 		if(joinType == 0) {
 			JoinOperator join1 = new JoinOperator(left, right, exp);

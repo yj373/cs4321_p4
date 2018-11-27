@@ -11,11 +11,13 @@ import visitors.UnionFindExpressionVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
+import data.UfCollection;
 import logicalOperators.*;
 
 public class LogicalPlanBuilder {
 	private PlainSelect ps;
 	private LogicalOperator rootOp;
+	private UfCollection ufc;
 	
 	public LogicalPlanBuilder(PlainSelect ps) {
 		this.ps = ps;
@@ -66,10 +68,10 @@ public class LogicalPlanBuilder {
 			Expression origin = ps.getWhere();
 			
 		    if (origin != null) {
-		    		origin.accept(visitor);
+		    	origin.accept(visitor);
 		    }
 		}
-		
+		this.ufc = visitor.getUfCollection();
 		
 		ExpressionClassifyVisitor classifier = new ExpressionClassifyVisitor();
 		//classifier.classify(ps);
@@ -85,6 +87,10 @@ public class LogicalPlanBuilder {
 	// get the root Operator of the query plan
 	LogicalOperator getRoot() {
 		return rootOp;
+	}
+	
+	public UfCollection getUfCollection() {
+		return ufc;
 	}
 }
 

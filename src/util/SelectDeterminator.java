@@ -1,61 +1,117 @@
 package util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import data.DataBase;
 import data.IndexNote;
 import data.TableStat;
+import data.UfCollection;
+import data.UfElement;
 import logicalOperators.LogicalScanOperator;
 
 public class SelectDeterminator {
 	/*Target logical scan oprator*/
 	private LogicalScanOperator lScan;
-	/*Store the index information related to this table, String: Sailres.A*/
+	/*Store the index information related to this table, String: tableName.Attr*/
 	private Map<String, IndexNote> indMap;
 	/*The number of tuples in this table */
 	private int t;
 	/*The number of pages in this table*/
 	private int p;
-	/*Reduction factor map*/
+	/*Reduction factor map, String: tableAliase.Attr*/
 	private Map<String, Float> redMap;
+	/*Union find*/
+	private UfCollection ufc;
+	private String tableName;
+	private String tableAliase;
 	
-	public SelectDeterminator(LogicalScanOperator ls) {
+	public SelectDeterminator(LogicalScanOperator ls, UfCollection u) {
+		this.ufc = u;
 		this.lScan = ls;
 		this.indMap = new HashMap<String, IndexNote>();
-		String tableName = lScan.getTableName();
+		this.redMap = new HashMap<String, Float>();
+		tableName = lScan.getTableName();
+		tableAliase = lScan.getTableAliase();
 		Map<String, List<IndexNote>> indexInfoRoster = DataBase.getInstance().getIndexInfos();
-		List<IndexNote> indexedColumns = indexInfoRoster.get(tableName);
-		for (IndexNote in : indexedColumns) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(tableName);
-			sb.append(".");
-			sb.append(in.getColumn());
-			indMap.put(sb.toString(), in);
-			
+		if(indexInfoRoster.containsKey(tableName)) {
+			List<IndexNote> indexedColumns = indexInfoRoster.get(tableName);
+			for (IndexNote in : indexedColumns) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(tableName);
+				sb.append(".");
+				sb.append(in.getColumn());
+				indMap.put(sb.toString(), in);
+				
+			}
 		}
 		Map<String, TableStat> statistics = DataBase.getInstance().getStatistics();
-		t = statistics.get(tableName).tupleNumber;
-		int tupleSize = DataBase.getInstance().getSchema(tableName).size()*4;
+		TableStat tableStatistics = statistics.get(tableName);
+		t = tableStatistics.tupleNumber;
+		LinkedList<String> attrs = DataBase.getInstance().getSchema(tableName);
+		int tupleSize = attrs.size()*4;
 		p = t*tupleSize/4096;
+		List<Long> lBounds = tableStatistics.lowerBound;
+		List<Long> uBounds = tableStatistics.upperBound;
+		Map<String, UfElement> ufMap = u.getMap();
+		for (int i = 0; i < attrs.size(); i++) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(tableAliase);
+			sb.append(".");
+			sb.append(attrs.get(i));
+			String key = sb.toString();
+			long lBound = lBounds.get(i);
+			long uBound = uBounds.get(i);
+			if(ufMap.containsKey(key)) {
+				UfElement uEle = ufMap.get(key);
+				long lBound2 = uEle.getLowerBound();
+				long uBound2 = uEle.getUpperBound();
+				float reFactor = (uBound2-lBound2)/(uBound-lBound);
+				redMap.put(key, reFactor);
+			}
+		}
 		
 		
 	}
 	public String selectColumn() {
 		String tableName = this.lScan.getTableName();
 		Map<String, Integer> indexLeaves = DataBase.getInstance().getIndexLeaves();
-		Map<String, TableStat> statistics = DataBase.getInstance().getStatistics();
 		String res = null;
-		int cost = p;
+		float cost = p;
 		for (String candCol : indMap.keySet()) {
 			boolean isClustered = checkClustered(candCol);
+			StringBuilder sb = new StringBuilder();
+			sb.append(tableAliase);
+			sb.append(".");
+			sb.append(candCol);
+			String key = sb.toString();
+			float r = redMap.get(key);
+			StringBuilder sb2 = new StringBuilder();
+			sb2.append(tableName);
+			sb2.append(".");
+			sb2.append(candCol);
+			String key2 = sb.toString();
+			int l = indexLeaves.get(key2);
+			
 			if (isClustered) {
-				
+				float cost2 = 3 + p*r;
+				if (cost2 < cost) {
+					res = key;
+					cost = cost2;
+				}
+			}else {
+				float cost2 = 3 + l*r + t*r;
+				if (cost2 < cost) {
+					res = key;
+					cost = cost2;
+				}
 			}
 		}
 		
-		return null;
+		return res;
 	}
 	/**
 	 * Check this column is clustered or not
