@@ -113,11 +113,14 @@ public class IndexTreeBuilder {
 	public void sortRelations() throws Exception {
 		for (String str : indexInfoRoster.keySet()) {
 			this.tableName = str;
-			this.order = indexInfoRoster.get(str).getOrder();
-			this.attribute = indexInfoRoster.get(str).getColumn();
-			this.isClustered = indexInfoRoster.get(str).isClustered();
-			if (isClustered) {
-				reCluster () ;
+			List<IndexNote> list = indexInfoRoster.get(str);
+			for (IndexNote cur : list) {
+				this.order = cur.getOrder();
+				this.attribute = cur.getColumn();
+				this.isClustered = cur.isClustered();
+				if (isClustered) {
+					reCluster () ;
+				}
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 package util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import data.DataBase;
@@ -15,9 +16,12 @@ public class SelectDeterminator {
 	public String selectColumn() {
 		String tableName = this.lScan.getTableName();
 		Map<String, Integer> indexLeavex = DataBase.getInstance().getIndexLeaves();
-		Map<String, IndexNote> indexInfoRoster = DataBase.getInstance().getIndexInfos();
+		Map<String, List<IndexNote>> indexInfoRoster = DataBase.getInstance().getIndexInfos();
 		
 		return null;
+	}
+	public boolean checkClustred(String column) {
+		return true;
 	}
 	
 
