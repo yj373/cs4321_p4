@@ -32,6 +32,7 @@ import operators.ScanOperator;
 import operators.SortOperator;
 import operators.V2ExternalSortOperator;
 import util.GlobalLogger;
+import util.SelectDeterminator;
 /**
  * Visit the logical plan and construct a physical operator 
  * query plan
@@ -54,29 +55,29 @@ public class PhysicalPlanVisitor {
 	public PhysicalPlanVisitor(int qN) {
 		this.childList = new LinkedList<Operator>();
 		this.queryNum = qN;
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(Dynamic_properties.configuePath));
-			String joinInfo = br.readLine();
-			String sortInfo = br.readLine();
-			String indexInfo = br.readLine();
-			if(joinInfo != null) {
-				String[] joinConfigue = joinInfo.split("\\s+");
-				joinType = Integer.valueOf(joinConfigue[0]);
-				if (joinConfigue.length==2) bnljBufferSize = Integer.valueOf(joinConfigue[1]);
-			}
-			if (sortInfo != null) {
-				String[] sortConfigue = sortInfo.split("\\s+");
-				sortType = Integer.valueOf(sortConfigue[0]);
-				if (sortConfigue.length==2) exSortBufferSize = Integer.valueOf(sortConfigue[1]);
-			}
-			if (indexInfo != null) {
-				indexState = Integer.valueOf(indexInfo);
-			}
-			br.close();
-		}catch(IOException e) {
-			GlobalLogger.getLogger().log(Level.SEVERE, e.toString(), e);
-			
-		}
+//		try {
+//			BufferedReader br = new BufferedReader(new FileReader(Dynamic_properties.configuePath));
+//			String joinInfo = br.readLine();
+//			String sortInfo = br.readLine();
+//			String indexInfo = br.readLine();
+//			if(joinInfo != null) {
+//				String[] joinConfigue = joinInfo.split("\\s+");
+//				joinType = Integer.valueOf(joinConfigue[0]);
+//				if (joinConfigue.length==2) bnljBufferSize = Integer.valueOf(joinConfigue[1]);
+//			}
+//			if (sortInfo != null) {
+//				String[] sortConfigue = sortInfo.split("\\s+");
+//				sortType = Integer.valueOf(sortConfigue[0]);
+//				if (sortConfigue.length==2) exSortBufferSize = Integer.valueOf(sortConfigue[1]);
+//			}
+//			if (indexInfo != null) {
+//				indexState = Integer.valueOf(indexInfo);
+//			}
+//			br.close();
+//		}catch(IOException e) {
+//			GlobalLogger.getLogger().log(Level.SEVERE, e.toString(), e);
+//			
+//		}
 	}
 
 	
@@ -90,15 +91,20 @@ public class PhysicalPlanVisitor {
 	
 	/**
 	 * Once visit a logical scan oprator, construct a 
-	 * physical scan operator and add it to the child list
+	 * physical scan operator and add it to the child list.
+	 * A SelectSterminator return a string which is an indexed column that
+	 * is used to build an indexed scan operator. If it returns null,
+	 * just build a full scan operator.
 	 * @param scOp: logical scan operator
 	 */
 	public void visit(LogicalScanOperator scOp) {
 		String tableName = scOp.getTableName();
 		String tableAliase = scOp.getTableAliase();
 		Expression expression = scOp.getCondition();
-		if(indexState == 1) {
-			IndexExpressionVisitor indVisitor = new IndexExpressionVisitor(scOp);
+		SelectDeterminator sd = new SelectDeterminator(scOp);
+		String selectColumn = sd.selectColumn();
+		if(selectColumn != null) {
+			IndexExpressionVisitor indVisitor = new IndexExpressionVisitor(scOp, selectColumn);
 			indVisitor.Classify();
 			Integer[] bounds = indVisitor.getBounds();
 			String column = indVisitor.getIndexColumn();
