@@ -135,7 +135,7 @@ public class DataBase {
 	/**
 	 * get info of index
 	 */
-	public Map<String, IndexNote> getIndexInfos() {
+	public Map<String, List<IndexNote>> getIndexInfos() {
 		return indexInfoRoster;
 	}
 	
