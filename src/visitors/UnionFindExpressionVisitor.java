@@ -58,97 +58,134 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 		Map<String, UfElement> map = ufCollections.getMap();
 		/*de-duplication*/
 		Set<UfElement> set = new HashSet<>();
-		
+
 		for (UfElement cur : map.values()) {
 			set.add(cur);
 		}
-		
-		
+
+
 		Expression finalExpress = ufCollections.getUnusableExpression();
-		
-		
+
+
 		for (UfElement cur : set) {
-			
+
 			/* append numerical constraints*/
 			for (String att : cur.getAttributes()) {
 				/* names[0] -- table name 
 				 * names[1] -- attribute name
 				 */
-				String[] names = att.split("\\.");
-				
+//				String[] names = att.split("\\.");
+
 				if (cur.getEqualityConstraint() == null) {
 					/* append lower bound constraint*/
 					if (cur.getLowerBound() != null) {
-						Expression column = new Column(new Table("",names[0]),names[1]);
+//						Expression column = new Column(new Table("",names[0]),names[1]);
+						
+						Column column = generateColumn (att);
+						
+						
 						Expression val = new LongValue(String.valueOf(cur.getLowerBound()));
 						Expression loExpre = new GreaterThanEquals(column, val);
-						
+
 						if (finalExpress == null) {
 							finalExpress = loExpre;
 						} else {
 							finalExpress = new AndExpression(finalExpress, loExpre);
 						}
-						
+
 					}
 					/* append upper bound constraint*/
 					if (cur.getUpperBound() != null) {
-						Expression column = new Column(new Table("",names[0]),names[1]);
+//						Expression column = new Column(new Table("",names[0]),names[1]);
+						Column column = generateColumn (att);
 						Expression val = new LongValue(String.valueOf(cur.getUpperBound()));
 						Expression upExpre = new MinorThanEquals(column, val);
-						
+
 						if (finalExpress == null) {
 							finalExpress = upExpre;
 						} else {
 							finalExpress = new AndExpression(finalExpress, upExpre);
 						}
-						
+
 					}
-					
+
 				} else {
 					/* append equality constraint to every attribute*/
-					Expression column = new Column(new Table("",names[0]),names[1]);
+					
+					Column column = generateColumn (att);
+//					Expression column = new Column(new Table("",names[0]),names[1]);
+					
 					Expression val = new LongValue(String.valueOf(cur.getEqualityConstraint()));
 					Expression eqExpre = new EqualsTo(column, val);
-					
+
 					if (finalExpress == null) {
 						finalExpress = eqExpre;
 					} else {
 						finalExpress = new AndExpression(finalExpress, eqExpre);
 					}
-					
+
 				}
-				
+
 			}
-			
-			
+
+
 			/* append equality constraints between attributes*/
 			List<String> attList = cur.getAttributes();
 			if (attList.size() > 1) {
 				for (int i=0; i< attList.size(); i++) {
 					for (int j=i+1; j <attList.size(); j++) {
 						
-						String[] names1 = attList.get(i).split("\\.");
-						String[] names2 = attList.get(j).split("\\.");
-						Expression column1 = new Column(new Table("",names1[0]),names1[1]);
-						Expression column2 = new Column(new Table("",names2[0]),names2[1]);
-						Expression eqExpre = new EqualsTo(column1, column2);
+						Column column1 = generateColumn (attList.get(i));
+						Column column2 = generateColumn (attList.get(j));
 						
+//
+//						String[] names1 = attList.get(i).split("\\.");
+//						String[] names2 = attList.get(j).split("\\.");
+//						//						Expression column1 = new Column(new Table("",names1[0]),names1[1]);
+//						//						Expression column2 = new Column(new Table("",names2[0]),names2[1]);
+//
+//						Column column1  = new Column();
+//						Table t = new Table();
+//						t.setName(names1[0]);
+//						column1.setTable(t);
+//						column1.setColumnName(names1[1]);
+//
+//						Column column2  = new Column();
+//						t = new Table();
+//						t.setName(names2[0]);
+//						column2.setTable(t);
+//						column2.setColumnName(names2[1]);
+
+						Expression eqExpre = new EqualsTo(column1, column2);
+
 						if (finalExpress == null) {
 							finalExpress = eqExpre;
 						} else {
 							finalExpress = new AndExpression(finalExpress, eqExpre);
 						}
-						
+
 					}
 				}
 			}
 
-	
+
 		}
-		
-		
-		
+
+
+
 		return finalExpress;
+	}
+
+	public Column generateColumn (String str) {
+
+		String[] names = str.split("\\.");
+		Column column  = new Column();
+		Table t = new Table();
+		t.setName(names[0]);
+		column.setTable(t);
+		column.setColumnName(names[1]);
+		
+		return column;
 	}
 
 	public Expression getUnusableExpression (){
@@ -187,7 +224,7 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 					System.out.println("finish");
 				}
 			}
-			
+
 			Expression te = visitor.generateExpression();
 			System.out.println("finish2");
 		}
@@ -212,14 +249,14 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 			 * reset the equality constraint in UfElement
 			 */
 
-			Integer value;
+			Long value;
 			String[] att = new String[1];
 			if (arg0.getLeftExpression() instanceof Column) {
 				att[0] = arg0.getLeftExpression().toString();
-				value =  Integer.valueOf(arg0.getRightExpression().toString());
+				value =  Long.valueOf(arg0.getRightExpression().toString());
 			} else {
 				att[0] = arg0.getRightExpression().toString();
-				value =  Integer.valueOf(arg0.getLeftExpression().toString());
+				value =  Long.valueOf(arg0.getLeftExpression().toString());
 			}
 
 			/* equality is the most strong constraint which change the value of both lower bound and upper bound*/
@@ -250,18 +287,18 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 		} else {
 
 			boolean leftIsColumn = true;
-			Integer value;
+			Long value;
 			String[] att = new String[1];
 			/* eg. sailors.A > 5 -- reset lower bound*/
 			if (arg0.getLeftExpression() instanceof Column) {
 				att[0] = arg0.getLeftExpression().toString();
-				value =  Integer.valueOf(arg0.getRightExpression().toString()) + 1;
+				value =  Long.valueOf(arg0.getRightExpression().toString()) + 1;
 
 			} else {
 				/* eg.  5 > sailors.A-- reset upper bound*/
 				leftIsColumn = false;
 				att[0] = arg0.getRightExpression().toString();
-				value =  Integer.valueOf(arg0.getLeftExpression().toString()) - 1;
+				value =  Long.valueOf(arg0.getLeftExpression().toString()) - 1;
 			}
 			UfElement cur = ufCollections.getUfElement(att[0]);
 			if (cur.getEqualityConstraint() == null) {
@@ -294,18 +331,18 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 		} else {
 
 			boolean leftIsColumn = true;
-			Integer value;
+			Long value;
 			String[] att = new String[1];
 			/* eg. sailors.A >= 5 -- reset lower bound*/
 			if (arg0.getLeftExpression() instanceof Column) {
 				att[0] = arg0.getLeftExpression().toString();
-				value =  Integer.valueOf(arg0.getRightExpression().toString());
+				value =  Long.valueOf(arg0.getRightExpression().toString());
 
 			} else {
 				/* eg.  5 >= sailors.A-- reset upper bound*/
 				leftIsColumn = false;
 				att[0] = arg0.getRightExpression().toString();
-				value =  Integer.valueOf(arg0.getLeftExpression().toString());
+				value =  Long.valueOf(arg0.getLeftExpression().toString());
 			}
 			UfElement cur = ufCollections.getUfElement(att[0]);
 			if (cur.getEqualityConstraint() == null) {
@@ -339,23 +376,23 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 		} else {
 
 			boolean leftIsColumn = true;
-			Integer value;
+			Long value;
 			String[] att = new String[1];
 			/* eg. sailors.A < 5 -- reset upper bound*/
 			if (arg0.getLeftExpression() instanceof Column) {
 				att[0] = arg0.getLeftExpression().toString();
-				value =  Integer.valueOf(arg0.getRightExpression().toString()) - 1;
+				value =  Long.valueOf(arg0.getRightExpression().toString()) - 1;
 
 			} else {
 				/* eg.  5 < sailors.A-- reset lower bound*/
 				leftIsColumn = false;
 				att[0] = arg0.getRightExpression().toString();
-				value =  Integer.valueOf(arg0.getLeftExpression().toString()) + 1;
+				value =  Long.valueOf(arg0.getLeftExpression().toString()) + 1;
 			}
 			UfElement cur = ufCollections.getUfElement(att[0]);
 			if (cur.getEqualityConstraint() == null) {
 				if (leftIsColumn) {
-					
+
 					if (cur.getUpperBound() == null) {
 						cur.setUpperBound(value);
 					} else {
@@ -381,7 +418,7 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 
 	@Override
 	public void visit(MinorThanEquals arg0) {
-		
+
 
 		/* both side are columns*/
 		if ((arg0.getLeftExpression() instanceof Column) && 
@@ -390,23 +427,23 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 		} else {
 
 			boolean leftIsColumn = true;
-			Integer value;
+			Long value;
 			String[] att = new String[1];
 			/* eg. sailors.A <= 5 -- reset upper bound*/
 			if (arg0.getLeftExpression() instanceof Column) {
 				att[0] = arg0.getLeftExpression().toString();
-				value =  Integer.valueOf(arg0.getRightExpression().toString());
+				value =  Long.valueOf(arg0.getRightExpression().toString());
 
 			} else {
 				/* eg.  5 <= sailors.A-- reset lower bound*/
 				leftIsColumn = false;
 				att[0] = arg0.getRightExpression().toString();
-				value =  Integer.valueOf(arg0.getLeftExpression().toString());
+				value =  Long.valueOf(arg0.getLeftExpression().toString());
 			}
 			UfElement cur = ufCollections.getUfElement(att[0]);
 			if (cur.getEqualityConstraint() == null) {
 				if (leftIsColumn) {
-					
+
 					if (cur.getUpperBound() == null) {
 						cur.setUpperBound(value);
 					} else {
@@ -432,14 +469,14 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 	}
 
 	/********************************************************************************************************************/
-	
+
 	@Override
 	public void visit(Column arg0) {
 		// TODO Auto-generated method stub
 
 	}
 
-	
+
 	@Override
 	public void visit(SubSelect arg0) {
 		// TODO Auto-generated method stub
