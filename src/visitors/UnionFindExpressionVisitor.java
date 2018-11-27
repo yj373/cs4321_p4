@@ -184,14 +184,9 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 		return column;
 	}
 	
-	/** getter method to get unusable expression*/
-	public Expression getUnusableExpression (){
-		return ufCollections.getUnusableExpression();
-	}
-
-	/** getter method to get map*/
-	public Map<String, UfElement> getMap (){
-		return ufCollections.getMap();
+	/** getter method to get UfCollection */
+	public UfCollection getUfCollection (){
+		return ufCollections;
 	}
 
 
