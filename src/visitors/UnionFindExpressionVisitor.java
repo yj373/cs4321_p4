@@ -1,5 +1,20 @@
 package visitors;
 
+/**
+ * Given a query, using this visitor to walk every Expression after Where clause
+ * and build up a union-find collection.
+ * Classify different Expression and return optimized Expression.
+ * 
+ * It should process each comparison as follows:
+ * 
+ * (1) if the comparison has the form att1 = att2, find the two elements containing att1 and att2 and union them.
+ * (2) if the comparison has the form att OP val, where val is an integer and OP is =; <;<=;>=;>,  
+ *  find the element containing att and update the appropriate numeric bound in the element.
+ * (3) if the comparison has any other form, it is an unusable comparison; put it aside for separate processing later as it does not go into the union-find.
+ *
+ * @author Xiaoxing Yan
+ */
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -46,19 +61,27 @@ import net.sf.jsqlparser.schema.Table;
 
 public class UnionFindExpressionVisitor implements ExpressionVisitor {
 
+	/* collection to store all UfElements*/
 	private UfCollection ufCollections;
 
 
+	/**
+	 * Constructor
+	 */
 	public UnionFindExpressionVisitor () {
 		ufCollections = new UfCollection();
 	}
 
+	/**
+	 * iterate over unusable expression and every UfElement 
+	 * generate new optimized expression
+	 * 
+	 * @return
+	 */
 	public Expression generateExpression () {
-		//de-duplicate
+		/*de-duplicate*/
 		Map<String, UfElement> map = ufCollections.getMap();
-		/*de-duplication*/
 		Set<UfElement> set = new HashSet<>();
-
 		for (UfElement cur : map.values()) {
 			set.add(cur);
 		}
@@ -66,24 +89,17 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 
 		Expression finalExpress = ufCollections.getUnusableExpression();
 
-
+		/*iterate every attriubte in this map*/
 		for (UfElement cur : set) {
 
 			/* append numerical constraints*/
 			for (String att : cur.getAttributes()) {
-				/* names[0] -- table name 
-				 * names[1] -- attribute name
-				 */
-//				String[] names = att.split("\\.");
+
 
 				if (cur.getEqualityConstraint() == null) {
 					/* append lower bound constraint*/
 					if (cur.getLowerBound() != null) {
-//						Expression column = new Column(new Table("",names[0]),names[1]);
-						
 						Column column = generateColumn (att);
-						
-						
 						Expression val = new LongValue(String.valueOf(cur.getLowerBound()));
 						Expression loExpre = new GreaterThanEquals(column, val);
 
@@ -96,7 +112,7 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 					}
 					/* append upper bound constraint*/
 					if (cur.getUpperBound() != null) {
-//						Expression column = new Column(new Table("",names[0]),names[1]);
+
 						Column column = generateColumn (att);
 						Expression val = new LongValue(String.valueOf(cur.getUpperBound()));
 						Expression upExpre = new MinorThanEquals(column, val);
@@ -111,9 +127,7 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 
 				} else {
 					/* append equality constraint to every attribute*/
-					
 					Column column = generateColumn (att);
-//					Expression column = new Column(new Table("",names[0]),names[1]);
 					
 					Expression val = new LongValue(String.valueOf(cur.getEqualityConstraint()));
 					Expression eqExpre = new EqualsTo(column, val);
@@ -137,25 +151,6 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 						
 						Column column1 = generateColumn (attList.get(i));
 						Column column2 = generateColumn (attList.get(j));
-						
-//
-//						String[] names1 = attList.get(i).split("\\.");
-//						String[] names2 = attList.get(j).split("\\.");
-//						//						Expression column1 = new Column(new Table("",names1[0]),names1[1]);
-//						//						Expression column2 = new Column(new Table("",names2[0]),names2[1]);
-//
-//						Column column1  = new Column();
-//						Table t = new Table();
-//						t.setName(names1[0]);
-//						column1.setTable(t);
-//						column1.setColumnName(names1[1]);
-//
-//						Column column2  = new Column();
-//						t = new Table();
-//						t.setName(names2[0]);
-//						column2.setTable(t);
-//						column2.setColumnName(names2[1]);
-
 						Expression eqExpre = new EqualsTo(column1, column2);
 
 						if (finalExpress == null) {
@@ -171,11 +166,12 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 
 		}
 
-
-
 		return finalExpress;
 	}
 
+	/**
+	 *  helper function to generate new Column Expression
+	 */
 	public Column generateColumn (String str) {
 
 		String[] names = str.split("\\.");
@@ -187,17 +183,22 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 		
 		return column;
 	}
-
+	
+	/** getter method to get unusable expression*/
 	public Expression getUnusableExpression (){
 		return ufCollections.getUnusableExpression();
 	}
 
+	/** getter method to get map*/
 	public Map<String, UfElement> getMap (){
 		return ufCollections.getMap();
 	}
 
 
 	@Override
+	/**
+	 * visit AndExpression
+	 */
 	public void visit(AndExpression arg0) {
 
 		arg0.getLeftExpression().accept(this);
@@ -205,6 +206,7 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 
 	}
 
+	//TEST
 	public static void main(String[] args) throws FileNotFoundException, ParseException {
 
 		CCJSqlParser parser = new CCJSqlParser(new FileReader(Dynamic_properties.queryPath));
@@ -231,6 +233,9 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 	}
 
 	@Override
+	/**
+	 * visit EqualsTo Expression
+	 */
 	public void visit(EqualsTo arg0) {
 		/* if left node and right node are both columns
 		 * merger two UfElements
@@ -270,6 +275,9 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 	}
 
 	@Override
+	/**
+	 * visit NotEqualsTo Expression
+	 */
 	public void visit(NotEqualsTo arg0) {
 
 		/* add expression to unusable expression*/
@@ -278,6 +286,9 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 	}
 
 	@Override
+	/**
+	 * visit GreaterThan Expression
+	 */
 	public void visit(GreaterThan arg0) {
 
 		/* both side are columns*/
@@ -323,6 +334,9 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 	}
 
 	@Override
+	/**
+	 * visit GreaterThanEquals Expression
+	 */
 	public void visit(GreaterThanEquals arg0) {
 		/* both side are columns*/
 		if ((arg0.getLeftExpression() instanceof Column) && 
@@ -367,6 +381,9 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 
 
 	@Override
+	/**
+	 * visit MinorThan Expression
+	 */
 	public void visit(MinorThan arg0) {
 
 		/* both side are columns*/
@@ -417,6 +434,9 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 	}
 
 	@Override
+	/**
+	 * visit MinorThanEquals Expression
+	 */
 	public void visit(MinorThanEquals arg0) {
 
 
