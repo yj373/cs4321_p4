@@ -1,0 +1,2 @@
+TIME START 1543278034706 
+Read statement: SELECT * FROM Sailors, Boats WHERE Sailors.A >= 9901 AND Boats.E >= 9001 

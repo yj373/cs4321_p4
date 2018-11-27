@@ -64,8 +64,8 @@ public class LogicalPlanBuilder {
 		
 		
 		ExpressionClassifyVisitor classifier = new ExpressionClassifyVisitor();
-		classifier.classify(ps);
-		//classifier.classify(visitor.generateExpression());  // use when test UnionFindExpressionVisitor.
+		//classifier.classify(ps);
+		classifier.classify(visitor.generateExpression());  // use when test UnionFindExpressionVisitor.
 		
 		// traverse from top to the bottom of the query plan, put conditions to its place.
 		LogicalPlanVisitor Venture = new LogicalPlanVisitor(classifier);

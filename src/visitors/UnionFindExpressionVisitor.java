@@ -168,30 +168,30 @@ public class UnionFindExpressionVisitor implements ExpressionVisitor {
 
 	}
 
-	public static void main(String[] args) throws FileNotFoundException, ParseException {
-
-		CCJSqlParser parser = new CCJSqlParser(new FileReader(Dynamic_properties.queryPath));
-		Statement statement;
-		while ((statement = parser.Statement()) != null) {
-			GlobalLogger.getLogger().info("Read statement: " + statement);
-			//System.out.println("Read statement: " + statement);
-			Select select = (Select) statement;
-			PlainSelect ps = (PlainSelect)select.getSelectBody();
-
-			UnionFindExpressionVisitor visitor = new UnionFindExpressionVisitor();
-			if (ps != null) {
-				Expression origin = ps.getWhere();
-
-				if (origin != null) {
-					origin.accept(visitor);
-					System.out.println("finish");
-				}
-			}
-			
-			Expression te = visitor.generateExpression();
-			System.out.println("finish2");
-		}
-	}
+//	public static void main(String[] args) throws FileNotFoundException, ParseException {
+//
+//		CCJSqlParser parser = new CCJSqlParser(new FileReader(Dynamic_properties.queryPath));
+//		Statement statement;
+//		while ((statement = parser.Statement()) != null) {
+//			GlobalLogger.getLogger().info("Read statement: " + statement);
+//			//System.out.println("Read statement: " + statement);
+//			Select select = (Select) statement;
+//			PlainSelect ps = (PlainSelect)select.getSelectBody();
+//
+//			UnionFindExpressionVisitor visitor = new UnionFindExpressionVisitor();
+//			if (ps != null) {
+//				Expression origin = ps.getWhere();
+//
+//				if (origin != null) {
+//					origin.accept(visitor);
+//					System.out.println("finish");
+//				}
+//			}
+//			
+//			Expression te = visitor.generateExpression();
+//			System.out.println("finish2");
+//		}
+//	}
 
 	@Override
 	public void visit(EqualsTo arg0) {
