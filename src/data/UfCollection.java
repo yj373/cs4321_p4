@@ -53,33 +53,33 @@ public class UfCollection {
 			map.put(str, a);
 		}
 		/*check lower bound*/
-		Integer aLower = a.getLowerBound();
-		Integer bLower = b.getLowerBound();
+		Long aLower = a.getLowerBound();
+		Long bLower = b.getLowerBound();
 		a.setLowerBound(aLower == null ? bLower : aLower);
 		
 		/*check upper bound*/
-		Integer aUpper = a.getUpperBound();
-		Integer bUpper = b.getUpperBound();
+		Long aUpper = a.getUpperBound();
+		Long bUpper = b.getUpperBound();
 		a.setUpperBound(aUpper == null ? bUpper : aUpper);
 		
 		/*check equality constraint*/
-		Integer aEqual = a.getEqualityConstraint();
-		Integer bEqual = b.getEqualityConstraint();
+		Long aEqual = a.getEqualityConstraint();
+		Long bEqual = b.getEqualityConstraint();
 		a.setEqualityConstraint(aEqual == null ? bEqual : aEqual);
 	
 	}
 	
-	public void setUfElementLowerBound (String attribute, Integer value) {
+	public void setUfElementLowerBound (String attribute, Long value) {
 		UfElement cur = getUfElement(attribute);
 		cur.setLowerBound(value);
 	}
 	
-	public void setUfElementUpperBound (String attribute, Integer value) {
+	public void setUfElementUpperBound (String attribute, Long value) {
 		UfElement cur = getUfElement(attribute);
 		cur.setUpperBound(value);
 	}
 	
-	public void setUfElementEqualityConstraint (String attribute, Integer value) {
+	public void setUfElementEqualityConstraint (String attribute, Long value) {
 		UfElement cur = getUfElement(attribute);
 		cur.setEqualityConstraint(value);
 	}

@@ -7,6 +7,10 @@ import net.sf.jsqlparser.statement.select.Select;
 import visitors.ExpressionClassifyVisitor;
 import visitors.LogicalPlanVisitor;
 import visitors.UnionFindExpressionVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import logicalOperators.*;
 
 public class LogicalPlanBuilder {
@@ -28,18 +32,22 @@ public class LogicalPlanBuilder {
 	public void buildLogicQueryPlan() {	
 	// To begin with, build the join operator layer by layer, like a complete binary tree
 	    if (ps != null) {
+	    /**
+	     * p4 update: construct the logical plan frame by composing a list of LogicalScanOperators
+	     * and construct the only logical join operator by that list.
+	     */
 		// first step, set the maintable's scanOperator as the top element
 			String mainTableInfo = ps.getFromItem().toString();
-			rootOp = new LogicalScanOperator(mainTableInfo);
-					
+			List<LogicalOperator> childList = new ArrayList<>();
+			childList.add(new LogicalScanOperator(mainTableInfo));
 		// Second step, join with all scan operators of join item one by one.
 			if (ps.getJoins() != null) {				
 				for (Object o : ps.getJoins()) {
 		    // join the root with the new coming tables
-					rootOp = new LogicalJoinOperator(rootOp, (new LogicalScanOperator(o.toString())));
+					childList.add(new LogicalScanOperator(o.toString()));
 				}
 			}
-					
+			rootOp = new LogicalJoinOperator(childList);		
 			LogicalOperator projectOp = new LogicalProjectOperator(ps, rootOp);
 			LogicalOperator sortOp = new LogicalSortOperator(ps, projectOp);
 			LogicalOperator deduplicateOp = new LogicalDuplicateEliminationOperator(ps, sortOp);

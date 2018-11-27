@@ -73,6 +73,15 @@ public class IndexExpressionVisitor implements ExpressionVisitor {
 		bounds[1] = null;
 		
 	}
+	public IndexExpressionVisitor(LogicalScanOperator logicalScan, String column) {
+		tableName = logicalScan.getTableName();
+		tableAliase = logicalScan.getTableAliase();
+		targetExpression = logicalScan.getCondition();
+		indexColumn = column;
+		bounds = new Integer[2];
+		bounds[0] = null;
+		bounds[1] = null;
+	}
 	
 	
 	public String getIndexColumn() {

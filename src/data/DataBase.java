@@ -31,7 +31,7 @@ public class DataBase {
 	/* p4 update: the statistics info (TableStat) of a given table (String) is stored in the map */
     private Map<String, TableStat> statistics = new HashMap<>();
     /* store the number of leaf pages of indexed columns, String is tableName.attribute */
-	private HashMap<String, Integer> indexLeaves; 
+	private Map<String, Integer> indexLeaves; 
 	
 	
 	/*Track the address of each table
@@ -46,7 +46,7 @@ public class DataBase {
 	private Map<String, LinkedList<String>> schemas = new HashMap<String, LinkedList<String>>();
 	
 	/* p3 update: stores the information from index_info.txt */
-	private Map<String, IndexNote> indexInfoRoster = new HashMap<>();
+	private Map<String, List<IndexNote>> indexInfoRoster = new HashMap<>();
 	
 	/*Singleton pattern*/
 	private static volatile DataBase Instance =null;
@@ -79,7 +79,15 @@ public class DataBase {
 				if (res.length == 4) {
 					/*IndexNode : column, isClustered, order*/
 					IndexNote indexInfo = new IndexNote(res[1], Integer.valueOf(res[2]) == 1, Integer.valueOf(res[3]));
-					indexInfoRoster.put(res[0], indexInfo);
+					if(indexInfoRoster.containsKey(res[0])) {
+						List<IndexNote> indexInfos = indexInfoRoster.get(res[0]);
+						indexInfos.add(indexInfo);
+						indexInfoRoster.put(res[0], indexInfos);
+					}else {
+						List<IndexNote> indexInfos = new ArrayList<IndexNote>();
+						indexInfos.add(indexInfo);
+						indexInfoRoster.put(res[0], indexInfos);
+					}
 				}
 				lineIndex = brIndex.readLine();
 			}
@@ -127,7 +135,7 @@ public class DataBase {
 	/**
 	 * get info of index
 	 */
-	public Map<String, IndexNote> getIndexInfos() {
+	public Map<String, List<IndexNote>> getIndexInfos() {
 		return indexInfoRoster;
 	}
 	
@@ -140,7 +148,7 @@ public class DataBase {
 	/**
 	 * get the statistics
 	 */
-	public HashMap<String, Integer> getIndexLeaves(){
+	public Map<String, Integer> getIndexLeaves(){
 		return indexLeaves;
 	}
 	/**
