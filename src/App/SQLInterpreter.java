@@ -14,6 +14,7 @@ import java.util.logging.Level;
 
 import data.DataBase;
 import data.Dynamic_properties;
+import data.IndexNote;
 import data.TableStat;
 import data.Tuple;
 import net.sf.jsqlparser.parser.CCJSqlParser;
@@ -64,6 +65,7 @@ public class SQLInterpreter {
 				int indexState = Integer.parseInt(br.readLine());
 				int queryState = Integer.parseInt(br.readLine());
 				IndexTreeBuilder itb = new IndexTreeBuilder();
+				Map<String, List<IndexNote>> indexInfoRoster = DataBase.getInstance().getIndexInfos();
 				if(indexState == 1) {
 					//Build the index
 					itb.build();

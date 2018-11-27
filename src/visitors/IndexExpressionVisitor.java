@@ -60,19 +60,19 @@ public class IndexExpressionVisitor implements ExpressionVisitor {
 	private Integer[] bounds; // bounds[0]: upper bound, bounds[1]: lower bound
 	private List<Expression> unindexedCondition = new LinkedList<Expression>();
 	
-	public IndexExpressionVisitor(LogicalScanOperator logicalScan) {
-		tableName = logicalScan.getTableName();
-		tableAliase = logicalScan.getTableAliase();
-		targetExpression = logicalScan.getCondition();
-		Map<String, IndexNote> indexInfoRoster = DataBase.getInstance().getIndexInfos();
-		if (indexInfoRoster.containsKey(tableName)) {
-			indexColumn = indexInfoRoster.get(tableName).getColumn();
-		}
-		bounds = new Integer[2];
-		bounds[0] = null;
-		bounds[1] = null;
-		
-	}
+//	public IndexExpressionVisitor(LogicalScanOperator logicalScan) {
+//		tableName = logicalScan.getTableName();
+//		tableAliase = logicalScan.getTableAliase();
+//		targetExpression = logicalScan.getCondition();
+//		Map<String, List<IndexNote>> indexInfoRoster = DataBase.getInstance().getIndexInfos();
+//		if (indexInfoRoster.containsKey(tableName)) {
+//			indexColumn = indexInfoRoster.get(tableName).getColumn();
+//		}
+//		bounds = new Integer[2];
+//		bounds[0] = null;
+//		bounds[1] = null;
+//		
+//	}
 	public IndexExpressionVisitor(LogicalScanOperator logicalScan, String column) {
 		tableName = logicalScan.getTableName();
 		tableAliase = logicalScan.getTableAliase();
