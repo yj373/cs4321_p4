@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import data.DataBase;
 import data.PlanCostInfo;
+import data.TableStat;
 import data.UfCollection;
 import data.UfElement;
 import operators.Operator;
@@ -18,11 +20,15 @@ public class JoinOrderDeterminator {
 	private Map<String, Integer> outputSizeMap;//Store the output size after selection, String: tableAliase
 	private Map<String, UfElement> ufcMap;
 	private Map<String, Set<String>> ufcDirec;//Store the table aliase and corresponding attrs in the ufcMap (with equality conditions)
-	public JoinOrderDeterminator(List<String> tList, Map<String, Integer> oMap, UfCollection u) {
+	private Map<String, TableStat> statistics;
+	private List<String> tableNames;
+	public JoinOrderDeterminator(List<String>tNames, List<String> tList, Map<String, Integer> oMap, UfCollection u) {
 		tableAliases = tList;
 		outputSizeMap = oMap;
 		ufcMap = u.getMap();
 		ufcDirec = new HashMap<String, Set<String>>();
+		statistics = DataBase.getInstance().getStatistics();
+		tableNames = tNames;
 		for (String key : ufcMap.keySet()) {
 			UfElement uEle = ufcMap.get(key);
 			if(uEle.getEqualityConstraint()!=null) {
@@ -142,8 +148,13 @@ public class JoinOrderDeterminator {
 				if(!rightRemoveList.isEmpty()) {
 					for (String right : rightRemoveList) {
 						UfElement uEle = ufcMap.get(right);
-						long rightLower = uEle.getLowerBound();
-						long rightUpper = uEle.getUpperBound();
+						String rightName = tableNames.get(tableAliases.indexOf(rightAliase));
+						TableStat rightStatistics = statistics.get(rightName);
+						int attrInd  = rightStatistics.columns.indexOf(right);
+						List<Long> lBounds = rightStatistics.lowerBound;
+						List<Long> uBounds = rightStatistics.upperBound;
+						Long rightLower = (uEle.getLowerBound() == null) ? lBounds.get(attrInd) : uEle.getLowerBound();
+						Long rightUpper = (uEle.getUpperBound() == null) ? uBounds.get(attrInd) : uEle.getUpperBound();
 						long vRight = Math.min(rightOutput, (rightUpper-rightLower+1));
 						long vLeft = Math.min(leftOutput, (rightUpper-rightLower+1));
 						denominator = denominator*Math.max(vRight, vLeft);

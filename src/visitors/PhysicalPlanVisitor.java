@@ -169,7 +169,7 @@ public class PhysicalPlanVisitor {
 		}
 		
 		
-		JoinOrderDeterminator jd = new JoinOrderDeterminator(this.tableAliases, this.outputSizeMap, this.ufc);
+		JoinOrderDeterminator jd = new JoinOrderDeterminator(this.tableNames, this.tableAliases, this.outputSizeMap, this.ufc);
 		List<Integer> joinOrder = jd.getOrder();
 		LinkedList<Operator> tempChildList = new LinkedList<Operator>();
 		Set<String> tempAllTable = new HashSet<String>();
