@@ -96,7 +96,7 @@ public class SelectDeterminator {
 			sb2.append(tableName);
 			sb2.append(".");
 			sb2.append(candCol);
-			String key2 = sb.toString();
+			String key2 = sb2.toString();
 			int l = indexLeaves.get(key2);
 			
 			if (isClustered) {
@@ -128,6 +128,14 @@ public class SelectDeterminator {
 		}
 		return false;
 	}
+	public int computeOutputSize() {
+		float reduction = 1;
+		for (String s : redMap.keySet()) {
+			reduction = reduction*redMap.get(s);
+		}
+		float res = t*reduction;
+		return (int)res;
+	} 
 	
 
 }

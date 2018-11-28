@@ -50,10 +50,11 @@ public class PhysicalPlanVisitor {
 	private LinkedList<Operator> childList;
 	private LinkedList<String> tableNames;//Store names of joined tables 
 	private LinkedList<String> tableAliases;//Store aliases of joined tables
+	private Map<String, Integer> outputSizeMap;//Store the output size after selection (in tuples)
 	private int queryNum;
-	private int joinType=0; // 0: TNLJ, 1: BNLJ, 2: SMJ
+	//private int joinType=0; // 0: TNLJ, 1: BNLJ, 2: SMJ
 	private int sortType=0; // 0: in-memory, 1: external
-	private int indexState=0; // 0: full-scan, 1: use indexes 
+	//private int indexState=0; // 0: full-scan, 1: use indexes 
 	private int bnljBufferSize = 5;//use 5 pages for BNLJ
 	private int exSortBufferSize = 6;//use 6 pages for external sort
 	private UfCollection ufc;
@@ -111,9 +112,10 @@ public class PhysicalPlanVisitor {
 		String tableName = scOp.getTableName();
 		String tableAliase = scOp.getTableAliase();
 		Expression expression = scOp.getCondition();
-		SelectDeterminator sd = new SelectDeterminator(scOp, ufc);
+		SelectDeterminator sd = new SelectDeterminator(scOp, this.ufc);
 		String selectColumn = sd.selectColumn();
 		boolean clustered = sd.checkClustered(selectColumn);
+		int output = sd.computeOutputSize();
 		if(selectColumn != null) {
 			IndexExpressionVisitor indVisitor = new IndexExpressionVisitor(scOp, selectColumn);
 			indVisitor.Classify();
@@ -128,12 +130,14 @@ public class PhysicalPlanVisitor {
 			childList.add(scan);
 			tableNames.add(tableName);
 			tableAliases.add(tableAliase);
+			outputSizeMap.put(tableAliase, output);
 			root = scan;
 		}else {
 			ScanOperator scan = new ScanOperator(tableName, tableAliase, expression);
 			childList.add(scan);
 			tableNames.add(tableName);
 			tableAliases.add(tableAliase);
+			outputSizeMap.put(tableAliase, output);
 			root = scan;
 		}
 		
@@ -165,7 +169,7 @@ public class PhysicalPlanVisitor {
 		}
 		
 		
-		JoinOrderDeterminator jd = new JoinOrderDeterminator(this.tableNames);
+		JoinOrderDeterminator jd = new JoinOrderDeterminator(this.tableAliases, this.outputSizeMap, this.ufc);
 		List<Integer> joinOrder = jd.getOrder();
 		LinkedList<Operator> tempChildList = new LinkedList<Operator>();
 		Set<String> tempAllTable = new HashSet<String>();
