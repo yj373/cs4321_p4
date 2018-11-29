@@ -109,6 +109,13 @@ public class Tuple {
 	}
 	
 	/**
+	 * set data
+	 */
+	public void setData(long[] newData) {
+		this.data = newData;
+	}	
+	
+	/**
 	 * get size
 	 */
 	public int getSize() {

@@ -315,7 +315,7 @@ public class PhysicalPlanVisitor {
 		}
 		List<SelectItem> sI = operator.getSelectItems();
 		Operator left = childList.pollLast();
-		ProjectOperator project = new ProjectOperator(sI, left);
+		ProjectOperator project = new ProjectOperator(sI, left, operator.getAliasOrder());
 		childList.add(project);
 		root = project;
 	}

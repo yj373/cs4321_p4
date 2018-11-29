@@ -59,8 +59,7 @@ public class LogicalScanOperator extends LogicalOperator {
 
 	@Override
 	public void accept(PhysicalPlanVisitor visitor) {
-		visitor.visit(this);
-		
+		visitor.visit(this);		
 	}
 
 	
