@@ -1,5 +1,6 @@
 package logicalOperators;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.jsqlparser.statement.select.PlainSelect;
@@ -12,7 +13,7 @@ public class LogicalProjectOperator extends LogicalOperator{
 	private List<SelectItem> selectItems;
 	/*check that whether return all attributes or return specific attributes*/
 	private boolean allColumns = false;
-	
+	private List<String> aliasOrder = new ArrayList<>();
 	/** 
 	 * This method is a constructor which is to
 	 * get corresponding columns information and initialize childOp.
@@ -32,6 +33,25 @@ public class LogicalProjectOperator extends LogicalOperator{
 		if (selectItems.get(0).toString() == "*") {
 			allColumns = true;
 		} 		
+		
+		if (plainSelect.getFromItem() != null) {
+			String mainTableInfo = plainSelect.getFromItem().toString();
+			String[] aimTable = mainTableInfo.split("\\s+");
+			aliasOrder.add(aimTable[aimTable.length - 1]);
+		}
+		
+		if (plainSelect.getJoins() != null) {
+			for (Object o : plainSelect.getJoins()) {
+			    // join the root with the new coming tables
+				String joinItem = o.toString();
+				String[] joinTable = joinItem.split("\\s+");
+				aliasOrder.add(joinTable[joinTable.length - 1]);
+			}
+		}
+	}
+	
+	public List<String> getAliasOrder() {
+		return aliasOrder;
 	}
 	
 	public boolean isAllCol() {

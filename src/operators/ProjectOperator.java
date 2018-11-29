@@ -1,6 +1,9 @@
 package operators;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +25,8 @@ public class ProjectOperator extends Operator{
 	private List<SelectItem> selectItems;
 	/*check that whether return all attributes or return specific attributes*/
 	private boolean allColumns = false;
+	/*memorize the primitive order of relations in SQL queries. String: tableAlias; Integer: the index*/
+	private Map<String, Integer> aliasOrder;
 	
 	/** 
 	 * This method is a constructor which is to
@@ -53,7 +58,7 @@ public class ProjectOperator extends Operator{
 		
 	}
 	
-	public ProjectOperator(List<SelectItem> sI, Operator op) {
+	public ProjectOperator(List<SelectItem> sI, Operator op, List<String> aliasOrder) {
 		super.setLeftChild(op);
 		StringBuilder sb = new StringBuilder();
 		sb.append("proj-");
@@ -70,6 +75,9 @@ public class ProjectOperator extends Operator{
 			}
 			this.schema = map;
 		} 
+		for (int i = 0; i < aliasOrder.size(); i++) {
+		    this.aliasOrder.put(aliasOrder.get(i), i);
+		}
 	}
 
 	
@@ -108,6 +116,26 @@ public class ProjectOperator extends Operator{
 		return current;
 	}
 
+	/** p4 update: renew the column order such that the column listed as the table order
+	 * mentioned in SQL queries;
+	 */
+	
+	private void reAlignColumn(Tuple currTp) {
+		if (currTp == null) {
+			return;
+		}
+		Map<String, Integer> currSchema = currTp.getSchema();
+		List<String> attributes = new ArrayList<>(this.schema.keySet());
+		Collections.sort(attributes, new ColumnComparator());
+		long[] newData = new long[currSchema.size()];
+		for (int i = 0; i < attributes.size(); i++) {
+			newData[i] = currSchema.get(attributes.get(i));
+			currSchema.put(attributes.get(i), i);
+		}
+		
+		currTp.setData(newData);
+	}
+	
 	/**
 	 * This method is to reset project operator
 	 * by resetting its child operator
@@ -116,6 +144,17 @@ public class ProjectOperator extends Operator{
 	public void reset() {
 		getLeftChild().reset();
 		
+	}
+	
+	private class ColumnComparator implements Comparator<String> {
+		@Override 
+		public int compare(String s1, String s2) {
+			String[] s1List = s1.split("\\.");
+			s1 = s1List[0];
+			String[] s2List = s2.split("\\.");
+			s2 = s2List[0];
+			return aliasOrder.get(s1) - aliasOrder.get(s2);
+		}
 	}
 	
 }
