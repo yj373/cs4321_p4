@@ -17,6 +17,7 @@ import data.Dynamic_properties;
 import data.IndexNote;
 import data.TableStat;
 import data.Tuple;
+import logicalOperators.LogicalOperator;
 import net.sf.jsqlparser.parser.CCJSqlParser;
 import net.sf.jsqlparser.statement.select.Select;
 import operators.Operator;
@@ -204,7 +205,8 @@ public class SQLInterpreter {
 				lb.buildLogicQueryPlan();
 				PhysicalPlanVisitor pv = new PhysicalPlanVisitor(index, lb.getUfCollection());
 				try {
-					lb.getRoot().accept(pv);
+					LogicalOperator lOp = lb.getRoot();
+					lOp.accept(pv);
 					root = pv.getPhysicalRoot();
 					
 					/*get the ending time*/

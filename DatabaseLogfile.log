@@ -1,21 +1,24 @@
-TIME START 1543527922114 
-Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D AND Sailors.B < 150 
-java.lang.NullPointerException 
-TIME START 1543527922634 
+TIME START 1543532528909 
 Read statement: SELECT DISTINCT * FROM Sailors 
-java.lang.NullPointerException 
-TIME START 1543527922639 
+end 
+time spent： 485ms 
+TIME START 1543532529418 
+Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D AND Sailors.B < 150 
+end 
+time spent： 14350ms 
+TIME START 1543532543799 
 Read statement: SELECT * FROM Sailors AS S1, Sailors AS S2 WHERE S1.A < S2.A 
 end 
-time spent： 2153ms 
-TIME START 1543527925816 
+time spent： 5410ms 
+TIME START 1543532549777 
 Read statement: SELECT B.F, B.D FROM Boats AS B ORDER BY B.D 
-java.lang.NullPointerException 
-TIME START 1543527925822 
+end 
+time spent： 8ms 
+TIME START 1543532549789 
 Read statement: SELECT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
 end 
-time spent： 534ms 
-TIME START 1543527926441 
+time spent： 538ms 
+TIME START 1543532550363 
 Read statement: SELECT DISTINCT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
 end 
-time spent： 557ms 
+time spent： 741ms 

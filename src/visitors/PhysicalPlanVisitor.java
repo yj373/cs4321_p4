@@ -201,7 +201,10 @@ public class PhysicalPlanVisitor {
 					tempChildList.add(generatePhysicalJoin(left, right, expr));
 				}
 			}
+		}else {
+			tempChildList.add(childList.pollLast());
 		}
+		
 		for (int i = 0; i < childList.size(); i++) {
 			childList.remove();
 		}
@@ -282,6 +285,10 @@ public class PhysicalPlanVisitor {
 	/*If the expression is an equality condition, return a SMJoinOperator. Otherwise, return a BNLJOperator*/
 	private Operator generatePhysicalJoin(Operator left, Operator right, Expression expr) {
 		EqualityExpressionVisitor eev = new EqualityExpressionVisitor();
+		if(expr == null) {
+			BNLJoinOperator join = new BNLJoinOperator(left, right, expr, bnljBufferSize);
+			return join;
+		}
 		expr.accept(eev);
 		if (eev.isEqal()) {
 			SMJoinOperator join = new SMJoinOperator(left, right, expr);

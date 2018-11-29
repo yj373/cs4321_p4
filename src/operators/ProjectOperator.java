@@ -65,6 +65,7 @@ public class ProjectOperator extends Operator{
 		sb.append(op.name);
 		name = sb.toString();
 		this.selectItems = sI;
+		this.aliasOrder = new HashMap<String, Integer>();
 		if (selectItems.get(0).toString() == "*") {
 			allColumns = true;
 			this.schema = op.schema;
@@ -113,6 +114,7 @@ public class ProjectOperator extends Operator{
 			}
 			
 		}
+		reAlignColumn(current);
 		return current;
 	}
 
