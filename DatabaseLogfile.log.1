@@ -1,2 +1,18 @@
-TIME START 1543276359871 
-Read statement: SELECT * FROM Sailors, Boats WHERE Sailors.A > 9900 AND Boats.E > 9000 
+TIME START 1543527116217 
+Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D AND Sailors.B < 150 
+java.lang.IndexOutOfBoundsException: Index 2 out-of-bounds for length 0 
+TIME START 1543527116605 
+Read statement: SELECT DISTINCT * FROM Sailors 
+java.lang.IndexOutOfBoundsException: Index 0 out-of-bounds for length 0 
+TIME START 1543527116611 
+Read statement: SELECT * FROM Sailors AS S1, Sailors AS S2 WHERE S1.A < S2.A 
+java.lang.IndexOutOfBoundsException: Index 1 out-of-bounds for length 0 
+TIME START 1543527116617 
+Read statement: SELECT B.F, B.D FROM Boats AS B ORDER BY B.D 
+java.lang.IndexOutOfBoundsException: Index 0 out-of-bounds for length 0 
+TIME START 1543527116622 
+Read statement: SELECT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
+java.lang.IndexOutOfBoundsException: Index 2 out-of-bounds for length 0 
+TIME START 1543527116632 
+Read statement: SELECT DISTINCT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
+java.lang.IndexOutOfBoundsException: Index 2 out-of-bounds for length 0 

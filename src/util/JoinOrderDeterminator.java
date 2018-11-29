@@ -52,6 +52,9 @@ public class JoinOrderDeterminator {
 			resKey.append(String.valueOf(i));
 		}
 		List<HashSet<String>> subsets = new ArrayList<HashSet<String>>();
+		for(int i = 0; i < tableAliases.size(); i++) {
+			subsets.add(new HashSet<String>());
+		}
 		StringBuilder candSet = new StringBuilder();
 		getAllSubsets(0, candSet, subsets);
 		Map<String, PlanCostInfo> costMap = new HashMap<String, PlanCostInfo>();
@@ -68,8 +71,10 @@ public class JoinOrderDeterminator {
 	
 	private void getAllSubsets(int currInd, StringBuilder candSet, List<HashSet<String>> subsets){
 		if(currInd == tableAliases.size()) {
-			int index = candSet.length()-1;
-			subsets.get(index).add(candSet.toString());
+			if (candSet.length() >0) {
+				int index = candSet.length()-1;
+				subsets.get(index).add(candSet.toString());
+			}
 			return;
 		}
 		candSet.append(String.valueOf(currInd));

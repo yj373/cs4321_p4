@@ -245,7 +245,7 @@ public class IndexTreeBuilder {
 		headerNode.getDatalist().add(leafNumber);
 		
 		/*update records in Database*/
-		DataBase.getInstance().updateIndexLeaves(tableName + attribute, leafNumber);
+		DataBase.getInstance().updateIndexLeaves(tableName + "." + attribute, leafNumber);
 		
 		headerNode.getDatalist().add(order);
 		write.reWritePage(0, headerNode.getDatalist());

@@ -50,6 +50,14 @@ public class SQLInterpreter {
 	public static int init (String[] args) {
 		if(args.length==3) {
 			Dynamic_properties.setPath(args[0], args[1], args[2]);
+			try {
+				IndexTreeBuilder itb = new IndexTreeBuilder();
+				Map<String, List<IndexNote>> indexInfoRoster = DataBase.getInstance().getIndexInfos();
+				itb.build();
+				itb.sortRelations();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 			return 1;
 		}else if (args.length == 2) {
 			Dynamic_properties.setPath(args[0], args[1]);

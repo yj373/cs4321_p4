@@ -3,6 +3,7 @@ package visitors;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,6 +65,9 @@ public class PhysicalPlanVisitor {
 	}
 	public PhysicalPlanVisitor(int qN, UfCollection u) {
 		this.childList = new LinkedList<Operator>();
+		this.tableAliases = new LinkedList<String>();
+		this.tableNames = new LinkedList<String>();
+		this.outputSizeMap = new HashMap<String, Integer>();
 		this.queryNum = qN;
 		this.ufc = u;
 //		try {
