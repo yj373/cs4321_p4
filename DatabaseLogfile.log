@@ -1,44 +1,9 @@
-<<<<<<< HEAD
-TIME START 1543542824033 
-=======
-<<<<<<< HEAD
-TIME START 1543541703743 
+TIME START 1543544774310 
 Read statement: SELECT DISTINCT S.A, R.B FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
 DupElim 
 -Sort[S.C] 
 --Project[S.A,R.B] 
 ---Join
-[[R.H, B.D,], equals null, min null, max null]
 [[S.A, R.G,], equals null, min null, max null]
+[[R.H, B.D,], equals null, min null, max null]
  
-=======
-TIME START 1543541366042 
->>>>>>> e838e3c6afbe1cb4d30770ed188e22df8f304a51
-Read statement: SELECT DISTINCT * FROM Sailors 
-end 
-time spent： 409ms 
-TIME START 1543542824457 
-Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D AND Sailors.B < 150 
-end 
-time spent： 13833ms 
-TIME START 1543542838321 
-Read statement: SELECT * FROM Sailors AS S1, Sailors AS S2 WHERE S1.A < S2.A 
-end 
-time spent： 9750ms 
-TIME START 1543542848658 
-Read statement: SELECT B.F, B.D FROM Boats AS B ORDER BY B.D 
-end 
-time spent： 18ms 
-TIME START 1543542848683 
-Read statement: SELECT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
-end 
-time spent： 1786ms 
-TIME START 1543542850625 
-Read statement: SELECT DISTINCT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
-end 
-<<<<<<< HEAD
-time spent： 1882ms 
-=======
-time spent： 700ms 
->>>>>>> 7b92792abeeb799d9615868781135ec0a3d5ceb1
->>>>>>> e838e3c6afbe1cb4d30770ed188e22df8f304a51
