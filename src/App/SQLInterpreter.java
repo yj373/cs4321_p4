@@ -17,6 +17,8 @@ import data.Dynamic_properties;
 import data.IndexNote;
 import data.TableStat;
 import data.Tuple;
+import logicalOperators.LogicalJoinOperator;
+import logicalOperators.LogicalOperator;
 import net.sf.jsqlparser.parser.CCJSqlParser;
 import net.sf.jsqlparser.statement.select.Select;
 import operators.Operator;
@@ -202,6 +204,17 @@ public class SQLInterpreter {
 				Select select = (Select) statement;
 				LogicalPlanBuilder lb = new LogicalPlanBuilder(select);
 				lb.buildLogicQueryPlan();
+				
+				/* print logical plan*/
+				LogicalOperator treeRoot = lb.getRoot();
+				writeLogicalPlan (treeRoot);
+				
+				
+				
+				
+				
+				
+				
 				PhysicalPlanVisitor pv = new PhysicalPlanVisitor(index, lb.getUfCollection());
 				try {
 					lb.getRoot().accept(pv);
@@ -241,6 +254,39 @@ public class SQLInterpreter {
 		root.dump(index);
 		GlobalLogger.getLogger().info("end");
 		//System.out.println("end");
+	}
+	
+	
+	public static void writeLogicalPlan (LogicalOperator treeRoot) {
+		writeLogicalPlanHelper (treeRoot, 0);
+		
+	}
+	
+	public static void writeLogicalPlanHelper (LogicalOperator treeRoot, int level) {
+		
+		if (treeRoot == null) {
+			return;
+		}
+		
+		treeRoot.printPlan(level);
+		
+		if (treeRoot instanceof LogicalJoinOperator) {
+			List<LogicalOperator> children = ((LogicalJoinOperator) treeRoot).getChildList();
+			for (LogicalOperator child : children) {
+				writeLogicalPlanHelper (child, level+1);
+			}
+		} else {
+			if (treeRoot.getLeftChild() != null) {
+				writeLogicalPlanHelper (treeRoot.getLeftChild(), level+1);
+			}
+			if (treeRoot.getRightChild() != null) {
+				writeLogicalPlanHelper (treeRoot.getRightChild(), level+1);	
+			}
+				
+		}
+
+		
+		
 	}
 	
 }

@@ -4,7 +4,7 @@ import java.util.Map;
 
 
 import data.TablePair;
-
+import data.UfCollection;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import logicalOperators.*;
@@ -21,6 +21,8 @@ import logicalOperators.*;
 public class LogicalPlanVisitor {
 	private Map<String, Expression> scanConditions;
 	private Map<TablePair, Expression> joinConditions;
+	/** store the union-find collections */
+	private UfCollection ufc;
 	
 	/**
 	 * Constructor: construct a LogicalPlanVisitor instance by an
@@ -36,6 +38,23 @@ public class LogicalPlanVisitor {
 			this.scanConditions = classifier.getScanConditions();
 			this.joinConditions = classifier.getJoinConditions();
 		}
+	}
+	
+
+	/**
+	 * get the union-find collection
+	 * @return
+	 */
+	public UfCollection getUfCollection () {
+		return this.ufc;
+	}
+	
+	/**
+	 * set the union-find collection
+	 * @return
+	 */
+	public UfCollection setUfCollection (UfCollection collection) {
+		return this.ufc = collection;
 	}
 	
 	/**
@@ -69,6 +88,7 @@ public class LogicalPlanVisitor {
 		/** p4 update: if it is an abstract logical join operator, 
 		 * that is, a logical join with multiple children*/
 		if (jnOp.getChildList() != null) {  
+			jnOp.setUfCollection(ufc);
 			for (LogicalOperator op : jnOp.getChildList()) {
 				op.accept(this);
 			}
@@ -79,6 +99,8 @@ public class LogicalPlanVisitor {
 		/**
 		 * p1 - p3 implementation of logical join Operators
 		 */
+		
+		
 		LogicalOperator op1 = jnOp.getLeftChild();
 		if (op1 != null) {
 			op1.accept(this);
