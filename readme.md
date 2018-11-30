@@ -6,7 +6,10 @@ Part 1: Top level entry of the project.
 
 Part 2: Implementation of the following algoorithms and functionalities
 
-    1. The selction pushing 
+    1. The selction pushing
+    Significantly different from the instructions, we have canceled selection operators in both logical plan and physical plan; Instead, we classify all the expression constraints into "Scan conditions," which apply to the constraints in one specific relation, as well as "Join Conditions", which apply to the constraints involving more than one relations.
+    
+    Firstly, we apply Union-Find Algorithm on all the expressions gained from SQL Interpreter with UnionFindExpressionVisitor, and attain a series of UnionFind Objects as guided by the instruction. Then by iteratively traversing all the UnionFind Objects, we can generate a new version of expression which is richer and better targeted. That is, for all equal attributes in one Union-Find Object, the upper bound and lower bound will be universally applied, therefore expressions for each attrbute to denote their bounds will be all generated. After that, we use an  ExpressionClassifier visitor, which we implementes in p1, to split the scan conditions and join conditions by the expression, and push all the scan conditions as the constraints to their related scan Operator, and leave the join conditions as the constraints of Join operators.
 	
     2. The choice of implementation for each logical selection opreator
         This functionality is implemented in the class src/util/SelectDeterminator.java. After the physical plan visits a scan operator, it will creat a SelectDeterminator 
