@@ -14,11 +14,16 @@ import data.TableStat;
 import data.UfCollection;
 import data.UfElement;
 import operators.Operator;
-
+/**
+ * This class is used to determine the join order, according to a list of tables. 
+ * The order will be returned as a string of indexes of those tables.(the index of tables in the list)
+ * @author Yixuan Jiang
+ *
+ */
 public class JoinOrderDeterminator {
 	private List<String> tableAliases;
 	private Map<String, Integer> outputSizeMap;//Store the output size after selection, String: tableAliase
-	private Map<String, UfElement> ufcMap;
+	private Map<String, UfElement> ufcMap;//The union-find map
 	private Map<String, Set<String>> ufcDirec;//Store the table aliase and corresponding attrs in the ufcMap (with equality conditions)
 	private Map<String, TableStat> statistics;
 	private List<String> tableNames;
@@ -46,6 +51,8 @@ public class JoinOrderDeterminator {
 			
 		}
 	}
+	
+	/*Get the join order and return in a string of the indexes of the tables*/
 	public List<Integer> getOrder(){
 		StringBuilder resKey = new StringBuilder();
 		for (int i = 0; i < tableAliases.size(); i++) {
@@ -68,7 +75,7 @@ public class JoinOrderDeterminator {
 		}
 		return res;
 	}
-	
+	/*Get all the possible subsets of the tables using DFS*/
 	private void getAllSubsets(int currInd, StringBuilder candSet, List<HashSet<String>> subsets){
 		if(currInd == tableAliases.size()) {
 			if (candSet.length() >0) {
@@ -82,7 +89,7 @@ public class JoinOrderDeterminator {
 		candSet.deleteCharAt(candSet.length()-1);
 		getAllSubsets(currInd + 1, candSet, subsets);
 	}
-	
+	/*Building the cost map using buttom-up Dynamic Programming*/
 	private void buildCostMap(Map<String, PlanCostInfo> costMap, List<HashSet<String>> subsets) {
 		Map<String, Set<String>> tempDirc = this.ufcDirec;
 		for (int i = 0; i < subsets.size(); i++) {
@@ -93,11 +100,18 @@ public class JoinOrderDeterminator {
 			}
 		}
 	}
-	
+	/**
+	 * Compute the cost of corresponding join plan
+	 * @param tables: all the tables taken into consideration
+	 * @param costMap: the map of the optimal cost of each plan, key: tables' indexes, value: optimal cost
+	 * @param direc: Store the attributes with equality join conditions in current case, key: table aliases, value: set of attributes
+	 * @return the cost information of this plan, including the cost, the output and the optimal join order.
+	 */
 	private PlanCostInfo getCost(String tables, Map<String, PlanCostInfo> costMap, Map<String,Set<String>> direc) {
 		if (tables.length() == 0) return null;
 		char[] tableChars = tables.toCharArray();
 		if (tableChars.length == 1) {
+			//There is only one table
 			Character tableChar = tableChars[0];
 			int tableIndex = Integer.parseInt(tableChar.toString());
 			String tableAliase = tableAliases.get(tableIndex);
@@ -113,6 +127,7 @@ public class JoinOrderDeterminator {
 			String order = "";
 			String rightAliase = "";
 			PlanCostInfo leftPlanCost = null;
+			//Determine the optimal join order by compute the cost
 			for (int i = 0; i < tableChars.length; i++) {
 				StringBuilder sb = new StringBuilder(tables);
 				String left = sb.deleteCharAt(i).toString();
@@ -129,19 +144,21 @@ public class JoinOrderDeterminator {
 					leftPlanCost = tempLeftPlanCost;
 				}
 			}
+			//Determine the output size of this order
 			Set<String> leftAllTables = leftPlanCost.allTables;
-			Set<String> allTables = leftAllTables;
+			Set<String> allTables = leftAllTables;//All the tables that have been dealt with so far
 			allTables.add(rightAliase);
 			int rightOutput = outputSizeMap.get(rightAliase);
 			int leftOutput = leftPlanCost.outputSize;
 			long denominator = 1;
 			if(direc.containsKey(rightAliase)) {
+				//There are equality conditions related to the right relation
 				Set<String> rightEquaAttrs = direc.get(rightAliase);
 				List<String> rightRemoveList = new LinkedList<String>();
 				List<String> leftRemoveList = new LinkedList<String>();
 				for(String rightEqualAttr : rightEquaAttrs) {
 					UfElement uEle = ufcMap.get(rightEqualAttr);
-					List<String> leftEqualAttrs = uEle.getAttributes();
+					List<String> leftEqualAttrs = uEle.getAttributes();//All the attributes equal to this target right attribute
 					for (String leftEqualAttr : leftEqualAttrs) {
 						String[] splittedAttr = leftEqualAttr.split(".");
 						if (leftAllTables.contains(splittedAttr[0])) {
@@ -151,6 +168,7 @@ public class JoinOrderDeterminator {
 					}
 				}
 				if(!rightRemoveList.isEmpty()) {
+					//There are equality conditions can be handled here 
 					for (String right : rightRemoveList) {
 						UfElement uEle = ufcMap.get(right);
 						String rightName = tableNames.get(tableAliases.indexOf(rightAliase));
@@ -158,6 +176,8 @@ public class JoinOrderDeterminator {
 						int attrInd  = rightStatistics.columns.indexOf(right);
 						List<Long> lBounds = rightStatistics.lowerBound;
 						List<Long> uBounds = rightStatistics.upperBound;
+						//If the upper bound in the union-find is null, there is no constraint on this attribute.
+						//The upper bound is the same as the original upper bound in the statistics. So is the lower bound.
 						Long rightLower = (uEle.getLowerBound() == null) ? lBounds.get(attrInd) : uEle.getLowerBound();
 						Long rightUpper = (uEle.getUpperBound() == null) ? uBounds.get(attrInd) : uEle.getUpperBound();
 						long vRight = Math.min(rightOutput, (rightUpper-rightLower+1));
