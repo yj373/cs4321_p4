@@ -1,24 +1,24 @@
-TIME START 1543541366042 
+TIME START 1543542824033 
 Read statement: SELECT DISTINCT * FROM Sailors 
 end 
-time spent： 454ms 
-TIME START 1543541366509 
+time spent： 409ms 
+TIME START 1543542824457 
 Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D AND Sailors.B < 150 
 end 
-time spent： 14470ms 
-TIME START 1543541381018 
+time spent： 13833ms 
+TIME START 1543542838321 
 Read statement: SELECT * FROM Sailors AS S1, Sailors AS S2 WHERE S1.A < S2.A 
 end 
-time spent： 5484ms 
-TIME START 1543541387028 
+time spent： 9750ms 
+TIME START 1543542848658 
 Read statement: SELECT B.F, B.D FROM Boats AS B ORDER BY B.D 
 end 
-time spent： 20ms 
-TIME START 1543541387084 
+time spent： 18ms 
+TIME START 1543542848683 
 Read statement: SELECT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
 end 
-time spent： 785ms 
-TIME START 1543541387916 
+time spent： 1786ms 
+TIME START 1543542850625 
 Read statement: SELECT DISTINCT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
 end 
-time spent： 700ms 
+time spent： 1882ms 

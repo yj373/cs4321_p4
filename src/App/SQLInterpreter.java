@@ -71,17 +71,11 @@ public class SQLInterpreter {
 				String outputDir = br.readLine();
 				String tempDir = br.readLine();
 				Dynamic_properties.setPath(inputDir, outputDir, tempDir);
-				int indexState = Integer.parseInt(br.readLine());
-				int queryState = Integer.parseInt(br.readLine());
 				IndexTreeBuilder itb = new IndexTreeBuilder();
 				Map<String, List<IndexNote>> indexInfoRoster = DataBase.getInstance().getIndexInfos();
-				if(indexState == 1) {
-					//Build the index
-					itb.build();
-				}else {
-					itb.sortRelations();
-				}
-				
+				//Build the index
+				itb.build();
+				itb.sortRelations();
 				br.close();
 				//return queryState;
 			} catch (Exception e) {
