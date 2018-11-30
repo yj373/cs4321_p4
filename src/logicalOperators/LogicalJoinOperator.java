@@ -1,18 +1,10 @@
 package logicalOperators;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 
 import data.TablePair;
-import data.UfCollection;
-import data.UfElement;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.statement.select.OrderByElement;
-import net.sf.jsqlparser.statement.select.PlainSelect;
-import util.LogicalLogger;
 import visitors.ExpressionClassifyVisitor;
 import visitors.LogicalPlanVisitor;
 import visitors.PhysicalPlanVisitor;
@@ -32,10 +24,6 @@ public class LogicalJoinOperator extends LogicalOperator {
 	 * and has no specific join Order*/
 	public List<LogicalOperator> childList = null;
 	private Map<TablePair, Expression> joinConditions;
-	
-	private UfCollection ufc;
-	
-	
 	
 	/** p4 update: logical joinOperator which contains a list of children
 	 * and has no specific join Order*/
@@ -128,71 +116,5 @@ public class LogicalJoinOperator extends LogicalOperator {
 		visitor.visit(this);
 		
 	}
-	
-	/**
-	 * get the union-find collection
-	 * @return
-	 */
-	public UfCollection getUfCollection () {
-		return this.ufc;
-	}
-	
-	/**
-	 * set the union-find collection
-	 * @return
-	 */
-	public UfCollection setUfCollection (UfCollection collection) {
-		return this.ufc = collection;
-	}
-	
-	
-	@Override
-	public void printPlan(int level) {
-		
-		
-		StringBuilder path = new StringBuilder();
-		UfCollection ufc = this.getUfCollection();
-		Expression residual = ufc.getUnusableExpression();
-		
-		/* print join line*/
-		for (int i=0; i<level; i++) {
-			path.append("-");
-		}
-		path.append("Join");
-		if ( residual != null) {
-			path.append("[");
-			path.append(residual.toString());
-			path.append("]");
-		}
-		path.append(System.getProperty("line.separator"));
-		
-		/* print every union-find element*/
-		/*de-duplicate*/
-		Map<String, UfElement> map = ufc.getMap();
-		Set<UfElement> set = new HashSet<>();
-		for (UfElement cur : map.values()) {
-			set.add(cur);
-		}
-
-		/*iterate every attriubte in this map*/
-		for (UfElement cur : set) {
-		
-			path.append("[");
-			path.append("[");
-			for (String str : cur.getAttributes()) {
-				path.append(str.toString()).append(", ");	
-			}
-			path.deleteCharAt(path.length()-1);
-			path.append("], equals ");
-			path.append(cur.getEqualityConstraint()).append(", min ");
-			path.append(cur.getLowerBound()).append(", max ");
-			path.append(cur.getUpperBound()).append("]");
-			path.append(System.getProperty("line.separator"));
-		
-		}	
-		LogicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
-	}
-	
-
 
 }

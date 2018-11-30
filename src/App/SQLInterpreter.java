@@ -17,7 +17,6 @@ import data.Dynamic_properties;
 import data.IndexNote;
 import data.TableStat;
 import data.Tuple;
-import logicalOperators.LogicalJoinOperator;
 import logicalOperators.LogicalOperator;
 import net.sf.jsqlparser.parser.CCJSqlParser;
 import net.sf.jsqlparser.statement.select.Select;
@@ -74,9 +73,10 @@ public class SQLInterpreter {
 				Dynamic_properties.setPath(inputDir, outputDir, tempDir);
 				IndexTreeBuilder itb = new IndexTreeBuilder();
 				Map<String, List<IndexNote>> indexInfoRoster = DataBase.getInstance().getIndexInfos();
-				//Build the index
 				itb.build();
+				
 				itb.sortRelations();
+				
 				br.close();
 				//return queryState;
 			} catch (Exception e) {
@@ -198,17 +198,6 @@ public class SQLInterpreter {
 				Select select = (Select) statement;
 				LogicalPlanBuilder lb = new LogicalPlanBuilder(select);
 				lb.buildLogicQueryPlan();
-				
-				/* print logical plan*/
-				LogicalOperator treeRoot = lb.getRoot();
-				writeLogicalPlan (treeRoot);
-				
-				
-				
-				
-				
-				
-				
 				PhysicalPlanVisitor pv = new PhysicalPlanVisitor(index, lb.getUfCollection());
 				try {
 					LogicalOperator lOp = lb.getRoot();
@@ -249,39 +238,6 @@ public class SQLInterpreter {
 		root.dump(index);
 		GlobalLogger.getLogger().info("end");
 		//System.out.println("end");
-	}
-	
-	
-	public static void writeLogicalPlan (LogicalOperator treeRoot) {
-		writeLogicalPlanHelper (treeRoot, 0);
-		
-	}
-	
-	public static void writeLogicalPlanHelper (LogicalOperator treeRoot, int level) {
-		
-		if (treeRoot == null) {
-			return;
-		}
-		
-		treeRoot.printPlan(level);
-		
-		if (treeRoot instanceof LogicalJoinOperator) {
-			List<LogicalOperator> children = ((LogicalJoinOperator) treeRoot).getChildList();
-			for (LogicalOperator child : children) {
-				writeLogicalPlanHelper (child, level+1);
-			}
-		} else {
-			if (treeRoot.getLeftChild() != null) {
-				writeLogicalPlanHelper (treeRoot.getLeftChild(), level+1);
-			}
-			if (treeRoot.getRightChild() != null) {
-				writeLogicalPlanHelper (treeRoot.getRightChild(), level+1);	
-			}
-				
-		}
-
-		
-		
 	}
 	
 }

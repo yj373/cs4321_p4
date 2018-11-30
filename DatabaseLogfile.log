@@ -1,14 +1,24 @@
-TIME START 1543545426905 
-Read statement: SELECT DISTINCT S.A, R.B FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
-DupElim 
--Sort[S.C] 
---Project[S.A,R.B] 
----Join
-[[S.A, R.G,], equals null, min null, max null]
-[[R.H, B.D,], equals null, min null, max null]
- 
-java.lang.NullPointerException 
-TIME START 1543545427493 
+TIME START 1543546104513 
 Read statement: SELECT DISTINCT * FROM Sailors 
-DupElim 
-java.lang.NullPointerException 
+end 
+time spent： 538ms 
+TIME START 1543546105079 
+Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D AND Sailors.B < 150 
+end 
+time spent： 14748ms 
+TIME START 1543546119859 
+Read statement: SELECT * FROM Sailors AS S1, Sailors AS S2 WHERE S1.A < S2.A 
+end 
+time spent： 6631ms 
+TIME START 1543546126764 
+Read statement: SELECT B.F, B.D FROM Boats AS B ORDER BY B.D 
+end 
+time spent： 13ms 
+TIME START 1543546126781 
+Read statement: SELECT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
+end 
+time spent： 692ms 
+TIME START 1543546127508 
+Read statement: SELECT DISTINCT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
+end 
+time spent： 707ms 

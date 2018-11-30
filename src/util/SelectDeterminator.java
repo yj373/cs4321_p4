@@ -40,7 +40,12 @@ public class SelectDeterminator {
 		if(indexInfoRoster.containsKey(tableName)) {
 			List<IndexNote> indexedColumns = indexInfoRoster.get(tableName);
 			for (IndexNote in : indexedColumns) {
+//				StringBuilder sb = new StringBuilder();
+//				sb.append(tableName);
+//				sb.append(".");
+//				sb.append(in.getColumn());
 				indMap.put(in.getColumn(), in);
+				
 			}
 		}
 		Map<String, TableStat> statistics = DataBase.getInstance().getStatistics();
@@ -74,10 +79,9 @@ public class SelectDeterminator {
 		
 		
 	}
-	
 	/**
-	 * Compute the costs of all the feasible paths, and select one with the lowest cost
-	 * @return if it determines to use index, it will return corresponding column. Otherwise, it will return null.
+	 * Determine which column to use
+	 * @return If an index is used, corresponding attribute will be returned. If not to use index, return null.
 	 */
 	public String selectColumn() {
 		String tableName = this.lScan.getTableName();
@@ -100,12 +104,14 @@ public class SelectDeterminator {
 			int l = indexLeaves.get(key2);
 			
 			if (isClustered) {
+				//if clustered, compute the cost
 				float cost2 = 3 + p*r;
 				if (cost2 < cost) {
 					res = key;
 					cost = cost2;
 				}
 			}else {
+				// if unclustered, compute the cost
 				float cost2 = 3 + l*r + t*r;
 				if (cost2 < cost) {
 					res = key;

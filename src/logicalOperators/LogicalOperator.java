@@ -1,13 +1,10 @@
 package logicalOperators;
 
 import java.util.*;
-import java.util.logging.Level;
 
-import data.UfCollection;
 import visitors.LogicalPlanVisitor;
 import visitors.PhysicalPlanVisitor;
 import net.sf.jsqlparser.expression.Expression;
-import util.LogicalLogger;
 /**
  * The base class of logical operators.
  * @author Ruoxuan Xu
@@ -19,10 +16,6 @@ public abstract class LogicalOperator {
 	protected Expression expression;
 	protected Set<String> allTable = new HashSet<>();
 	
-	
-	public void printPlan(int level) {
-
-	}
 	
 	public void setExpression(Expression ex) {
 		expression = ex;
@@ -47,7 +40,6 @@ public abstract class LogicalOperator {
 	public LogicalOperator getRightChild() {
 		return rightChild;
 	}
-	
 	
 	// Table aliases that are enclosed by this operator
 	public Set<String> getAllTable() {

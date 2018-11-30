@@ -2,7 +2,6 @@ package visitors;
 import java.util.*;
 
 import data.TablePair;
-import data.UfCollection;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.arithmetic.Addition;
 import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseAnd;
@@ -59,8 +58,6 @@ import net.sf.jsqlparser.statement.select.SubSelect;
 
 public class ExpressionClassifyVisitor implements ExpressionVisitor{
 	
-
-	
 	/** the map to store all joinCondtions extracted from JSqlParser */
 	private Map<TablePair, Expression> joinConditions = new HashMap<>();
 	
@@ -74,8 +71,6 @@ public class ExpressionClassifyVisitor implements ExpressionVisitor{
 	public Map<String, Expression> getScanConditions() {
 		return scanConditions;
 	}
-	
-
 	
 	/**
 	 * get the map between all table pairs and their respective join conditions.
