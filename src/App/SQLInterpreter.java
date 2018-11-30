@@ -17,10 +17,7 @@ import data.Dynamic_properties;
 import data.IndexNote;
 import data.TableStat;
 import data.Tuple;
-<<<<<<< HEAD
 import logicalOperators.LogicalJoinOperator;
-=======
->>>>>>> 7b92792abeeb799d9615868781135ec0a3d5ceb1
 import logicalOperators.LogicalOperator;
 import net.sf.jsqlparser.parser.CCJSqlParser;
 import net.sf.jsqlparser.statement.select.Select;
