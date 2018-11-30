@@ -5,3 +5,8 @@ DupElim
 [[S.A, R.G,], equals null, min null, max null]
 [[R.H, B.D,], equals null, min null, max null]
  
+java.lang.NullPointerException 
+TIME START 1543545427493 
+Read statement: SELECT DISTINCT * FROM Sailors 
+DupElim 
+java.lang.NullPointerException 

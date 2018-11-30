@@ -1,4 +1,4 @@
-TIME START 1543544774310 
+TIME START 1543545426905 
 Read statement: SELECT DISTINCT S.A, R.B FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
 DupElim 
 -Sort[S.C] 
@@ -7,3 +7,8 @@ DupElim
 [[S.A, R.G,], equals null, min null, max null]
 [[R.H, B.D,], equals null, min null, max null]
  
+java.lang.NullPointerException 
+TIME START 1543545427493 
+Read statement: SELECT DISTINCT * FROM Sailors 
+DupElim 
+java.lang.NullPointerException 
