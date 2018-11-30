@@ -79,6 +79,7 @@ public class LogicalPlanBuilder {
 		
 		// traverse from top to the bottom of the query plan, put conditions to its place.
 		LogicalPlanVisitor Venture = new LogicalPlanVisitor(classifier);
+		Venture.setUfCollection(ufc);
 		if (rootOp != null) {
 	        rootOp.accept(Venture);
 		}

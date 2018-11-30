@@ -1,7 +1,10 @@
 package logicalOperators;
 
+import java.util.logging.Level;
+
 import data.Tuple;
 import net.sf.jsqlparser.statement.select.PlainSelect;
+import util.LogicalLogger;
 import visitors.LogicalPlanVisitor;
 import visitors.PhysicalPlanVisitor;
 
@@ -27,7 +30,6 @@ public class LogicalDuplicateEliminationOperator extends LogicalOperator{
 	 * 
 	 */
 	
-
 	public LogicalDuplicateEliminationOperator(PlainSelect ps, LogicalOperator op) {
 		if (ps.getDistinct() != null) {
 			workState = true;
@@ -46,6 +48,16 @@ public class LogicalDuplicateEliminationOperator extends LogicalOperator{
 		return plainSelect;
 	}
 
+	@Override
+	public void printPlan(int level) {
+		StringBuilder path = new StringBuilder();
+		for (int i=0; i<level; i++) {
+			path.append("-");
+		}
+		path.append("DupElim");
+		LogicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
+	}
+	
 	@Override
 	public void accept(LogicalPlanVisitor visitor) {
 		visitor.visit(this);
