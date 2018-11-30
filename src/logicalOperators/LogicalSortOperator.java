@@ -1,6 +1,11 @@
 package logicalOperators;
 
+import java.util.List;
+import java.util.logging.Level;
+
+import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
+import util.LogicalLogger;
 import visitors.LogicalPlanVisitor;
 import visitors.PhysicalPlanVisitor;
 
@@ -38,5 +43,28 @@ public class LogicalSortOperator extends LogicalOperator{
 	public void accept(PhysicalPlanVisitor visitor) {
 		visitor.visit(this);
 		
+	}
+	
+	@Override
+	public void printPlan(int level) {
+		StringBuilder path = new StringBuilder();
+		PlainSelect plainSelect = this.getPlainSelect();
+		List<OrderByElement> list = plainSelect.getOrderByElements();
+		
+		for (int i=0; i<level; i++) {
+			path.append("-");
+		}
+		path.append("Sort[");
+		if (list!= null) {
+			for (OrderByElement str : list) {
+				path.append(str.toString()).append(",");	
+			}
+			path.deleteCharAt(path.length()-1);
+		}
+
+		
+		path.append("]");
+		
+		LogicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
 	}
 }

@@ -2,9 +2,11 @@ package logicalOperators;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SelectItem;
+import util.LogicalLogger;
 import visitors.LogicalPlanVisitor;
 import visitors.PhysicalPlanVisitor;
 
@@ -71,6 +73,25 @@ public class LogicalProjectOperator extends LogicalOperator{
 	public void accept(PhysicalPlanVisitor visitor) {
 		visitor.visit(this);
 		
+	}
+	
+	@Override
+	public void printPlan(int level) {
+		StringBuilder path = new StringBuilder();
+		List<SelectItem> list = this.getSelectItems();
+		
+		
+		for (int i=0; i<level; i++) {
+			path.append("-");
+		}
+		path.append("Project[");
+		for (SelectItem str : list) {
+			path.append(str.toString()).append(",");	
+		}
+		path.deleteCharAt(path.length()-1);
+		path.append("]");
+		
+		LogicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
 	}
 	
 }

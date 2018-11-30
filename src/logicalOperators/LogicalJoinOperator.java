@@ -1,13 +1,22 @@
 package logicalOperators;
 
+import java.util.HashSet;
 import java.util.List;
+
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
 
 import data.TablePair;
+import data.UfCollection;
+import data.UfElement;
 import net.sf.jsqlparser.expression.Expression;
+import util.LogicalLogger;
 import visitors.ExpressionClassifyVisitor;
 import visitors.LogicalPlanVisitor;
 import visitors.PhysicalPlanVisitor;
+
+import data.UfCollection;
 
 /**
  * This class is a logical join operator. It has left child and right child as its child 
@@ -116,5 +125,73 @@ public class LogicalJoinOperator extends LogicalOperator {
 		visitor.visit(this);
 		
 	}
+	
+	
+	private UfCollection ufc;
+	
+	@Override
+	public void printPlan(int level) {
+		
+		
+		StringBuilder path = new StringBuilder();
+		UfCollection ufc = this.getUfCollection();
+		Expression residual = ufc.getUnusableExpression();
+		
+		/* print join line*/
+		for (int i=0; i<level; i++) {
+			path.append("-");
+		}
+		path.append("Join");
+		if ( residual != null) {
+			path.append("[");
+			path.append(residual.toString());
+			path.append("]");
+		}
+		
+		
+		/* print every union-find element*/
+		/*de-duplicate*/
+		Map<String, UfElement> map = ufc.getMap();
+		Set<UfElement> set = new HashSet<>();
+		for (UfElement cur : map.values()) {
+			set.add(cur);
+		}
+
+		/*iterate every attriubte in this map*/
+		for (UfElement cur : set) {
+			path.append(System.getProperty("line.separator"));
+			path.append("[");
+			path.append("[");
+			for (String str : cur.getAttributes()) {
+				path.append(str.toString()).append(", ");	
+			}
+			path.deleteCharAt(path.length()-1);
+			path.append("], equals ");
+			path.append(cur.getEqualityConstraint()).append(", min ");
+			path.append(cur.getLowerBound()).append(", max ");
+			path.append(cur.getUpperBound()).append("]");
+			
+		
+		}	
+		LogicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
+	}
+	
+	/**
+	 * get the union-find collection
+	 * @return
+	 */
+	public UfCollection getUfCollection () {
+		return this.ufc;
+	}
+	
+	/**
+	 * set the union-find collection
+	 * @return
+	 */
+	public UfCollection setUfCollection (UfCollection collection) {
+		return this.ufc = collection;
+	}
+	
+
 
 }

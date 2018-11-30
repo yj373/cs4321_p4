@@ -1,6 +1,7 @@
 package App;
 
 import java.io.BufferedReader;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,8 +23,10 @@ import net.sf.jsqlparser.parser.CCJSqlParser;
 import net.sf.jsqlparser.statement.select.Select;
 import operators.Operator;
 import util.GlobalLogger;
+import util.LogicalLogger;
 import util.TupleReader;
 import visitors.PhysicalPlanVisitor;
+import logicalOperators.LogicalJoinOperator;
 
 
 /**
@@ -198,6 +201,15 @@ public class SQLInterpreter {
 				Select select = (Select) statement;
 				LogicalPlanBuilder lb = new LogicalPlanBuilder(select);
 				lb.buildLogicQueryPlan();
+				
+				
+				/* print logical plan*/
+				LogicalOperator treeRoot = lb.getRoot();
+				writeLogicalPlan (treeRoot);
+				
+				
+				
+				
 				PhysicalPlanVisitor pv = new PhysicalPlanVisitor(index, lb.getUfCollection());
 				try {
 					LogicalOperator lOp = lb.getRoot();
@@ -239,5 +251,49 @@ public class SQLInterpreter {
 		GlobalLogger.getLogger().info("end");
 		//System.out.println("end");
 	}
+	
+	
+	
+	
+	
+	
+	
+	public static void writeLogicalPlan (LogicalOperator treeRoot) {
+		String str = "**************************************Query************************************************";
+		LogicalLogger.getLogger().log(Level.SEVERE, str, new Exception());
+		LogicalLogger.getLogger().log(Level.SEVERE, "\n", new Exception());
+		writeLogicalPlanHelper (treeRoot, 0);
+		LogicalLogger.getLogger().log(Level.SEVERE, "\n", new Exception());
+		
+	}
+	
+	public static void writeLogicalPlanHelper (LogicalOperator treeRoot, int level) {
+		
+		if (treeRoot == null) {
+			return;
+		}
+		
+		treeRoot.printPlan(level);
+		
+		if (treeRoot instanceof LogicalJoinOperator) {
+			List<LogicalOperator> children = ((LogicalJoinOperator) treeRoot).getChildList();
+			for (LogicalOperator child : children) {
+				writeLogicalPlanHelper (child, level+1);
+			}
+		} else {
+			if (treeRoot.getLeftChild() != null) {
+				writeLogicalPlanHelper (treeRoot.getLeftChild(), level+1);
+			}
+			if (treeRoot.getRightChild() != null) {
+				writeLogicalPlanHelper (treeRoot.getRightChild(), level+1);	
+			}
+				
+		}
+
+		
+		
+	}
+	
+
 	
 }

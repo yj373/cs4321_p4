@@ -50,4 +50,12 @@ public abstract class LogicalOperator {
 	public abstract void accept(LogicalPlanVisitor visitor);
 	public abstract void accept(PhysicalPlanVisitor visitor);
 
+	
+	public void printPlan(int level) {
+
+	}
+	
+
+
+
 }

@@ -4,7 +4,7 @@ import java.util.Map;
 
 
 import data.TablePair;
-
+import data.UfCollection;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import logicalOperators.*;
@@ -69,6 +69,9 @@ public class LogicalPlanVisitor {
 		/** p4 update: if it is an abstract logical join operator, 
 		 * that is, a logical join with multiple children*/
 		if (jnOp.getChildList() != null) {  
+			
+			jnOp.setUfCollection(ufc);
+			
 			for (LogicalOperator op : jnOp.getChildList()) {
 				op.accept(this);
 			}
@@ -138,4 +141,25 @@ public class LogicalPlanVisitor {
 			op1.accept(this);
 		}		
 	}
+	
+	
+	
+	private UfCollection ufc;
+	
+	/**
+	 * get the union-find collection
+	 * @return
+	 */
+	public UfCollection getUfCollection () {
+		return ufc;
+	}
+	
+	/**
+	 * set the union-find collection
+	 * @return
+	 */
+	public UfCollection setUfCollection (UfCollection collection) {
+		return ufc = collection;
+	}
+	
 }

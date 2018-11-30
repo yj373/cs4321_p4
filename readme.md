@@ -22,4 +22,4 @@ Part 2: Implementation of the following algoorithms and functionalities
         This functionality is implemented in the function generatePhysicalJoin() in the class src/visitors/gneratePhysicalVisitor. Based on the results of previous experiments. The SMJ operator is faster that the BNLJ operator. Considering SMJ can only be used to deal with equality join conditions, we use SMJ for all the equality join conditions. As for the other cases, we use BNLJ operator. We use 5 pages for BNLJ, and 6 pages for SMJ. Further explaination is provided in the comments of the class.
 	 
 Part 3: Known bugs
-    1.  Rught now, we cannot print the logical plan and the physical pan without bug. And we are still working on it
+    1.  Right now, we have not implemented the function to print the physical pan without bug. And we are still working on it.

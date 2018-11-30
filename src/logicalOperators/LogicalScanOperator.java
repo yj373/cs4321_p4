@@ -1,8 +1,11 @@
 package logicalOperators;
 
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 import data.DataBase;
+import net.sf.jsqlparser.expression.Expression;
+import util.LogicalLogger;
 import visitors.LogicalPlanVisitor;
 import visitors.PhysicalPlanVisitor;
 
@@ -62,6 +65,38 @@ public class LogicalScanOperator extends LogicalOperator {
 		visitor.visit(this);		
 	}
 
-	
+	@Override
+	public void printPlan(int level) {
+		StringBuilder path = new StringBuilder();
+		Expression exp = this.expression;
+		
+		if (exp!=null) {
+			for (int i=0; i<level; i++) {
+				path.append("-");
+			}
+			
+			String[] array = exp.toString().split("AND");
+			path.append("Select[");
+			for (String str : array) {
+				path.append(str.trim()).append(",");
+			}
+			
+			path.deleteCharAt(path.length()-1);
+			path.append("]");
+			path.append(System.getProperty("line.separator"));
+			
+			level ++;
+		}
+		
+		/* print scan operator*/
+		for (int i=0; i<level; i++) {
+			path.append("-");
+		}
+		path.append("Leaf[");
+		path.append(tableName).append("]");
+		
+		LogicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
+	}
+
 	
 }
