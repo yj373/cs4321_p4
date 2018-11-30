@@ -70,29 +70,6 @@ public class PhysicalPlanVisitor {
 		this.outputSizeMap = new HashMap<String, Integer>();
 		this.queryNum = qN;
 		this.ufc = u;
-//		try {
-//			BufferedReader br = new BufferedReader(new FileReader(Dynamic_properties.configuePath));
-//			String joinInfo = br.readLine();
-//			String sortInfo = br.readLine();
-//			String indexInfo = br.readLine();
-//			if(joinInfo != null) {
-//				String[] joinConfigue = joinInfo.split("\\s+");
-//				joinType = Integer.valueOf(joinConfigue[0]);
-//				if (joinConfigue.length==2) bnljBufferSize = Integer.valueOf(joinConfigue[1]);
-//			}
-//			if (sortInfo != null) {
-//				String[] sortConfigue = sortInfo.split("\\s+");
-//				sortType = Integer.valueOf(sortConfigue[0]);
-//				if (sortConfigue.length==2) exSortBufferSize = Integer.valueOf(sortConfigue[1]);
-//			}
-//			if (indexInfo != null) {
-//				indexState = Integer.valueOf(indexInfo);
-//			}
-//			br.close();
-//		}catch(IOException e) {
-//			GlobalLogger.getLogger().log(Level.SEVERE, e.toString(), e);
-//			
-//		}
 	}
 
 	
@@ -148,23 +125,12 @@ public class PhysicalPlanVisitor {
 	}
 	
 	/**
-	 * Once visit a logical join operator, visit its left child and
-	 * right child first. After the child list is updated, construct a 
-	 * physical join operator. The first element of the child list is the 
-	 * left child of the join operator, while the second element is
-	 * the right child.
+	 * Once visit a logical join operator, visit its children. After the child list is updated, construct a 
+	 * physical join operator. After determining the join order, generate join operators in this order. Update the child list.
 	 * @param jnOp: logical join operator
 	 * @throws Exception 
 	 */
 	public void visit(LogicalJoinOperator jnOp) {
-//		LogicalOperator op1 = jnOp.getLeftChild();
-//		if (op1 != null) {
-//			op1.accept(this);
-//		}
-//		LogicalOperator op2 = jnOp.getRightChild();
-//		if (op2 != null) {
-//			op2.accept(this);
-//		}
 		List<LogicalOperator> children = jnOp.getChildList();
 		if (!children.isEmpty()) {
 			for(LogicalOperator op : children) {
@@ -172,7 +138,7 @@ public class PhysicalPlanVisitor {
 			}
 		}
 		
-		
+		//Determine the join order
 		JoinOrderDeterminator jd = new JoinOrderDeterminator(this.tableNames, this.tableAliases, this.outputSizeMap, this.ufc);
 		List<Integer> joinOrder = jd.getOrder();
 		LinkedList<Operator> tempChildList = new LinkedList<Operator>();
@@ -201,59 +167,16 @@ public class PhysicalPlanVisitor {
 					tempChildList.add(generatePhysicalJoin(left, right, expr));
 				}
 			}
+		}else {
+			tempChildList.add(childList.pollLast());
 		}
+		
 		for (int i = 0; i < childList.size(); i++) {
 			childList.remove();
 		}
 		Operator join= tempChildList.pollLast();
 		childList.add(join);
 		root = join;
-		
-		
-		
-//		Expression exp = jnOp.getCondition();
-//		Operator right = childList.pollLast();
-//		Operator left = childList.pollLast();
-//		
-//		
-//		if(joinType == 0) {
-//			JoinOperator join1 = new JoinOperator(left, right, exp);
-//			childList.add(join1);
-//			root = join1;
-//		}else if (joinType == 1) {
-//			BNLJoinOperator join2 = new BNLJoinOperator(left, right, exp, bnljBufferSize);
-//			childList.add(join2);
-//			root = join2;
-//		}else if (joinType == 2) {
-//			SMJoinOperator join3 = new SMJoinOperator(left, right, exp);
-//			if (sortType == 0) {
-//				if (left != null) {
-//					Operator originalLeft = left;
-//					left = new InMemSortOperator(originalLeft, join3.getLeftSortColumns());			                			
-//				}
-//				if (right != null) {
-//					Operator originalRight = right;
-//					right = new InMemSortOperator(originalRight, join3.getRightSortColumns());			
-//				}
-//			}else if(sortType == 1) {
-//				if (left != null) {
-//					Operator originalLeft = left;
-//					//left = new ExternalSortOperator(queryNum, exSortBufferSize, join3.getLeftSortColumns(), originalLeft.getSchema(), originalLeft);
-//					left = new V2ExternalSortOperator(queryNum, exSortBufferSize, join3.getLeftSortColumns(), originalLeft.getSchema(), originalLeft);
-//				}
-//				if (right != null) {
-//					Operator originalRight = right;
-//					//right = new ExternalSortOperator(queryNum, exSortBufferSize, join3.getRightSortColumns(), originalRight.getSchema(), originalRight);
-//					right = new V2ExternalSortOperator(queryNum, exSortBufferSize, join3.getRightSortColumns(), originalRight.getSchema(), originalRight);		
-//
-//				}
-//			}
-//			join3.setLeftChild(left);
-//			join3.setRightChild(right);
-//			childList.add(join3);
-//			root = join3;
-//		}
-//		
 	
 	}
 	
@@ -282,6 +205,10 @@ public class PhysicalPlanVisitor {
 	/*If the expression is an equality condition, return a SMJoinOperator. Otherwise, return a BNLJOperator*/
 	private Operator generatePhysicalJoin(Operator left, Operator right, Expression expr) {
 		EqualityExpressionVisitor eev = new EqualityExpressionVisitor();
+		if(expr == null) {
+			BNLJoinOperator join = new BNLJoinOperator(left, right, expr, bnljBufferSize);
+			return join;
+		}
 		expr.accept(eev);
 		if (eev.isEqal()) {
 			SMJoinOperator join = new SMJoinOperator(left, right, expr);

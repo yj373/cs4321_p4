@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 TIME START 1543541703743 
 Read statement: SELECT DISTINCT S.A, R.B FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
 DupElim 
@@ -7,3 +8,29 @@ DupElim
 [[R.H, B.D,], equals null, min null, max null]
 [[S.A, R.G,], equals null, min null, max null]
  
+=======
+TIME START 1543541366042 
+Read statement: SELECT DISTINCT * FROM Sailors 
+end 
+time spent： 454ms 
+TIME START 1543541366509 
+Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D AND Sailors.B < 150 
+end 
+time spent： 14470ms 
+TIME START 1543541381018 
+Read statement: SELECT * FROM Sailors AS S1, Sailors AS S2 WHERE S1.A < S2.A 
+end 
+time spent： 5484ms 
+TIME START 1543541387028 
+Read statement: SELECT B.F, B.D FROM Boats AS B ORDER BY B.D 
+end 
+time spent： 20ms 
+TIME START 1543541387084 
+Read statement: SELECT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
+end 
+time spent： 785ms 
+TIME START 1543541387916 
+Read statement: SELECT DISTINCT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
+end 
+time spent： 700ms 
+>>>>>>> 7b92792abeeb799d9615868781135ec0a3d5ceb1
