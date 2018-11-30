@@ -9,7 +9,8 @@ Part 2: Implementation of the following algoorithms and functionalities
     1. The selction pushing 
 	
     2. The choice of implementation for each logical selection opreator
-        This functionality is mplemented in the class 
+        This functionality is implemented in the class src/util/SelectDeterminator.java. After the physical plan visits a scan operator, it will creat a SelectDeterminator 
+        to determine which index to use or just use full scan. 
     
     3. The choice of join order
     
