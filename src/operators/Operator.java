@@ -167,6 +167,10 @@ public abstract class Operator {
 		System.out.println("finish dumping");
 		reset();
 	}
+	
+	public void printPlan(int level) {
+
+	}
 		
 		
 

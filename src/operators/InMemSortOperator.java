@@ -14,9 +14,12 @@ package operators;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 
 import data.Dynamic_properties;
 import data.Tuple;
+import net.sf.jsqlparser.expression.Expression;
+import util.PhysicalLogger;
 import util.TupleReader;
 import util.TupleWriter;
 
@@ -135,5 +138,35 @@ public class InMemSortOperator extends Operator{
 			return 0;
 		}
 	}
+	
+	
+	@Override
+	public void printPlan(int level) {
+			
+		StringBuilder path = new StringBuilder();
+		List<String> sortCol = this.sortColumns;
+		
+		
+		/* print join line*/
+		for (int i=0; i<level; i++) {
+			path.append("-");
+		}
+			
+		path.append("InMemorySort");
+		if ( sortCol != null) {
+			path.append("[");
+			
+			for (int i=0; i<sortCol.size();i++) {
+				path.append(sortCol.get(i));
+				path.append(",");
+			}
+			path.deleteCharAt(path.length() -1);
+			path.append("]");
+		}
+	
+		PhysicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
+	}
+	
+	
 
 }

@@ -6,9 +6,12 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import data.Dynamic_properties;
 import data.Tuple;
+import net.sf.jsqlparser.expression.Expression;
+import util.PhysicalLogger;
 import util.TupleReader;
 import util.TupleWriter;
 
@@ -375,5 +378,32 @@ public class V2ExternalSortOperator extends Operator{
 		}
 		
 	}
+	
+	@Override
+	public void printPlan(int level) {
+			
+		StringBuilder path = new StringBuilder();
+		List<String> sortCol = this.attrList;
+		
+		for (int i=0; i<level; i++) {
+			path.append("-");
+		}
+			
+		path.append("ExternalSort");
+		
+		if ( sortCol != null) {
+			path.append("[");
+			
+			for (int i=0; i<sortCol.size();i++) {
+				path.append(sortCol.get(i));
+				path.append(",");
+			}
+			path.deleteCharAt(path.length() -1);
+			path.append("]");
+		}
+	
+		PhysicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
+	}
+	
 
 }

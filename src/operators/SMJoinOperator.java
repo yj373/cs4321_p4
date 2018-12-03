@@ -1,9 +1,11 @@
 package operators;
 
 import java.util.*;
+import java.util.logging.Level;
 
 import data.Tuple;
 import net.sf.jsqlparser.expression.Expression;
+import util.PhysicalLogger;
 import visitors.LocateExpressionVisitor;
 
 /**
@@ -174,6 +176,29 @@ public class SMJoinOperator extends JoinOperator{
 	public List<String> getRightSortColumns(){
 		return this.rightSortColumns;
 	}
+	
+	
+	@Override
+	public void printPlan(int level) {
+			
+		StringBuilder path = new StringBuilder();
+		Expression exp = this.getExpression();
+		
+		/* print join line*/
+		for (int i=0; i<level; i++) {
+			path.append("-");
+		}
+			
+		path.append("SMJ");
+		if ( exp != null) {
+			path.append("[");
+			path.append(exp.toString());
+			path.append("]");
+		}
+	
+		PhysicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
+	}
+	
 	
 
 }

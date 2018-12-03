@@ -1,7 +1,16 @@
 package operators;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+
 import data.Tuple;
+import data.UfCollection;
+import data.UfElement;
 import net.sf.jsqlparser.expression.Expression;
+import util.LogicalLogger;
+import util.PhysicalLogger;
 
 /**
  * This class provides function:
@@ -203,4 +212,28 @@ public class BNLJoinOperator extends JoinOperator{
 
 
 	}
+	
+	
+	@Override
+	public void printPlan(int level) {
+			
+		StringBuilder path = new StringBuilder();
+		Expression exp = this.getExpression();
+		
+		/* print join line*/
+		for (int i=0; i<level; i++) {
+			path.append("-");
+		}
+			
+		path.append("BNLJ");
+		if ( exp != null) {
+			path.append("[");
+			path.append(exp.toString());
+			path.append("]");
+		}
+	
+		PhysicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
+	}
+	
+	
 }

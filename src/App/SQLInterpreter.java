@@ -24,6 +24,7 @@ import net.sf.jsqlparser.statement.select.Select;
 import operators.Operator;
 import util.GlobalLogger;
 import util.LogicalLogger;
+import util.PhysicalLogger;
 import util.TupleReader;
 import visitors.PhysicalPlanVisitor;
 import logicalOperators.LogicalJoinOperator;
@@ -77,9 +78,8 @@ public class SQLInterpreter {
 				IndexTreeBuilder itb = new IndexTreeBuilder();
 				Map<String, List<IndexNote>> indexInfoRoster = DataBase.getInstance().getIndexInfos();
 				itb.build();
-				
 				itb.sortRelations();
-				
+
 				br.close();
 				//return queryState;
 			} catch (Exception e) {
@@ -88,9 +88,9 @@ public class SQLInterpreter {
 			}
 		}
 		return 1;
-		
+
 	}
-	
+
 	/**
 	 * get statistics of all relations in db.
 	 */
@@ -119,7 +119,7 @@ public class SQLInterpreter {
 							long val = Math.min(tableSt.lowerBound.get(i), data[i]);
 							tableSt.lowerBound.set(i, val);
 						}
-						
+
 						if (tableSt.upperBound.size() < i + 1) {
 							tableSt.upperBound.add(data[i]);
 						} else {
@@ -141,18 +141,18 @@ public class SQLInterpreter {
 			e.printStackTrace();
 		}
 	}
-	
-   /**
-    * 
-    * @param statistics
-    */
+
+	/**
+	 * 
+	 * @param statistics
+	 */
 	private static void writeToDataBase(Map<String, TableStat> statistics) {
 		// Initialize the path of stats.txt
 		StringBuilder statPath = new StringBuilder(Dynamic_properties.inputPath);
-        statPath.append("/db/stats.txt");
-        File statsFile = new File(statPath.toString());
-        // if statsFile not exist, create it;
-        // if it exists already, delete its content;
+		statPath.append("/db/stats.txt");
+		File statsFile = new File(statPath.toString());
+		// if statsFile not exist, create it;
+		// if it exists already, delete its content;
 		if (!statsFile.exists()) {
 			try {
 				statsFile.createNewFile();
@@ -161,7 +161,7 @@ public class SQLInterpreter {
 			}
 		}
 		statsFile.delete();
-		
+
 		// Initialize a buffer writer, use it to write statistics, then close it.
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(statsFile));
@@ -178,7 +178,7 @@ public class SQLInterpreter {
 	 * Build query tree for every query
 	 */
 	public static void BuildQueryPlan () {
-		
+
 		String queriesFile = Dynamic_properties.queryPath;
 		try {
 			Operator root = null;
@@ -192,52 +192,56 @@ public class SQLInterpreter {
 				long startTime=System.currentTimeMillis();    
 				GlobalLogger.getLogger().info("TIME START " + startTime);
 				long endTime = 0;
-				
-				
-				
+
+
+
 				GlobalLogger.getLogger().info("Read statement: " + statement);
-				
+
 				//System.out.println("Read statement: " + statement);
 				Select select = (Select) statement;
 				LogicalPlanBuilder lb = new LogicalPlanBuilder(select);
 				lb.buildLogicQueryPlan();
-				
-				
+
+
 				/* print logical plan*/
 				LogicalOperator treeRoot = lb.getRoot();
 				writeLogicalPlan (treeRoot);
-				
-				
-				
-				
+
+
+
+
 				PhysicalPlanVisitor pv = new PhysicalPlanVisitor(index, lb.getUfCollection());
 				try {
 					LogicalOperator lOp = lb.getRoot();
 					lOp.accept(pv);
 					root = pv.getPhysicalRoot();
-					
+
+					/* print logical plan*/
+
+					writePhysicalPlan (root);
+
 					/*get the ending time*/
 					endTime=System.currentTimeMillis();  
 					writeToFile (index, root);
 					GlobalLogger.getLogger().info("time spent： "+(endTime - startTime)+"ms"); 
-		
-					
+
+
 				} catch (Exception e) {
 					//System.err.println("Exception occurred during paring query" + index);
 					GlobalLogger.getLogger().log(Level.SEVERE, e.toString(), e);
-			        e.printStackTrace();
+					e.printStackTrace();
 				}
 				index++;	
 			}
 
 		} catch (Exception e){
-			 //System.err.println("Exception occurred during parsing");
-			 GlobalLogger.getLogger().log(Level.SEVERE, e.toString(), e);
-	         e.printStackTrace();
+			//System.err.println("Exception occurred during parsing");
+			GlobalLogger.getLogger().log(Level.SEVERE, e.toString(), e);
+			e.printStackTrace();
 		}
 
 	}
-	
+
 	/**
 	 * write output to output files
 	 * 
@@ -251,30 +255,30 @@ public class SQLInterpreter {
 		GlobalLogger.getLogger().info("end");
 		//System.out.println("end");
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public static void writeLogicalPlan (LogicalOperator treeRoot) {
 		String str = "**************************************Query************************************************";
 		LogicalLogger.getLogger().log(Level.SEVERE, str, new Exception());
 		LogicalLogger.getLogger().log(Level.SEVERE, "\n", new Exception());
 		writeLogicalPlanHelper (treeRoot, 0);
 		LogicalLogger.getLogger().log(Level.SEVERE, "\n", new Exception());
-		
+
 	}
-	
+
 	public static void writeLogicalPlanHelper (LogicalOperator treeRoot, int level) {
-		
+
 		if (treeRoot == null) {
 			return;
 		}
-		
+
 		treeRoot.printPlan(level);
-		
+
 		if (treeRoot instanceof LogicalJoinOperator) {
 			List<LogicalOperator> children = ((LogicalJoinOperator) treeRoot).getChildList();
 			for (LogicalOperator child : children) {
@@ -287,13 +291,41 @@ public class SQLInterpreter {
 			if (treeRoot.getRightChild() != null) {
 				writeLogicalPlanHelper (treeRoot.getRightChild(), level+1);	
 			}
-				
+
 		}
 
-		
-		
-	}
-	
 
-	
+
+	}
+
+
+
+	public static void writePhysicalPlan (Operator treeRoot) {
+		String str = "**************************************Physical Plan************************************************";
+		PhysicalLogger.getLogger().log(Level.SEVERE, str, new Exception());
+		PhysicalLogger.getLogger().log(Level.SEVERE, "\n", new Exception());
+		writePhysicalPlanHelper (treeRoot, 0);
+		LogicalLogger.getLogger().log(Level.SEVERE, "\n", new Exception());
+
+	}
+
+	public static void writePhysicalPlanHelper (Operator treeRoot, int level) {
+		if (treeRoot == null) {
+			return;
+		}
+
+		treeRoot.printPlan(level);
+
+		if (treeRoot.getLeftChild() != null) {
+			writePhysicalPlanHelper(treeRoot.getLeftChild(), level+1);
+		}
+		if (treeRoot.getRightChild() != null) {
+			writePhysicalPlanHelper (treeRoot.getRightChild(), level+1);	
+		}
+
+
+	}
+
+
+
 }

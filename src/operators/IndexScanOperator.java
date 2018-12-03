@@ -9,10 +9,13 @@ import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.logging.Level;
 
 import data.DataBase;
 import data.Dynamic_properties;
 import data.Tuple;
+import net.sf.jsqlparser.expression.Expression;
+import util.PhysicalLogger;
 import util.TupleReader;
 
 /**
@@ -322,6 +325,26 @@ public class IndexScanOperator extends Operator{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+
+	@Override
+	public void printPlan(int level) {
+		StringBuilder path = new StringBuilder();
+
+		/* print index scan operator*/
+		for (int i=0; i<level; i++) {
+			path.append("-");
+		}
+		path.append("IndexScan[");
+		path.append(tableName).append(",");
+		path.append(column).append(",");
+		path.append(upperBound).append(",");
+		path.append(lowerBound);
+		path.append("]");
+		
+		PhysicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
+		
 	}
 
 }

@@ -2,10 +2,16 @@ package operators;
 
 import java.io.File;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+
 import data.DataBase;
 
 import data.Tuple;
 import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.statement.select.SelectItem;
+import util.LogicalLogger;
+import util.PhysicalLogger;
 import util.TupleReader;
 
 /**
@@ -256,4 +262,38 @@ public class ScanOperator extends Operator{
 		return tr;
 	}
 
+	@Override
+	public void printPlan(int level) {
+		StringBuilder path = new StringBuilder();
+		String tableName = this.tableName;
+		Expression exp = this.getExpression();
+		
+		if (exp!=null) {
+			for (int i=0; i<level; i++) {
+				path.append("-");
+			}
+			
+			String[] array = exp.toString().split("AND");
+			path.append("Select[");
+			for (String str : array) {
+				path.append(str.trim()).append(",");
+			}
+			
+			path.deleteCharAt(path.length()-1);
+			path.append("]");
+			path.append(System.getProperty("line.separator"));
+			
+			level ++;
+		}
+		
+		/* print scan operator*/
+		for (int i=0; i<level; i++) {
+			path.append("-");
+		}
+		path.append("TableScan[");
+		path.append(tableName).append("]");
+		
+		PhysicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
+		
+	}
 }

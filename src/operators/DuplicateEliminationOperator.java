@@ -1,7 +1,11 @@
 package operators;
 
+import java.util.logging.Level;
+
 import data.Tuple;
 import net.sf.jsqlparser.statement.select.PlainSelect;
+import util.LogicalLogger;
+import util.PhysicalLogger;
 
 
 /**
@@ -113,6 +117,16 @@ public class DuplicateEliminationOperator extends Operator{
 		}
 		return true;
 
+	}
+	
+	@Override
+	public void printPlan(int level) {
+		StringBuilder path = new StringBuilder();
+		for (int i=0; i<level; i++) {
+			path.append("-");
+		}
+		path.append("DupElim");
+		PhysicalLogger.getLogger().log(Level.SEVERE, path.toString(), new Exception());
 	}
 	
 
