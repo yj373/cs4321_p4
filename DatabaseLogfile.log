@@ -3,104 +3,97 @@
 
  
 Query NO. 1 
-TIME START 1543968893721 
+TIME START 1543975005113 
 Read statement: SELECT * FROM Sailors 
 end 
-time spent： 639ms 
+time spent： 793ms 
 
  
 
  
 Query NO. 2 
-TIME START 1543968894403 
+TIME START 1543975005934 
 Read statement: SELECT Sailors.A FROM Sailors 
 end 
-time spent： 71ms 
+time spent： 105ms 
 
  
 
  
 Query NO. 3 
-TIME START 1543968894537 
+TIME START 1543975006063 
 Read statement: SELECT Boats.F, Boats.D FROM Boats 
 end 
-time spent： 166ms 
+time spent： 159ms 
 
  
 
  
 Query NO. 4 
-TIME START 1543968894719 
+TIME START 1543975006238 
 Read statement: SELECT Reserves.G, Reserves.H FROM Reserves 
 end 
-time spent： 19ms 
+time spent： 28ms 
 
  
 
  
 Query NO. 5 
-TIME START 1543968894744 
+TIME START 1543975006297 
 Read statement: SELECT * FROM Sailors WHERE Sailors.B >= Sailors.C 
 end 
-time spent： 199ms 
+time spent： 267ms 
 
  
 
  
 Query NO. 6 
-TIME START 1543968895012 
+TIME START 1543975006631 
 Read statement: SELECT Sailors.A FROM Sailors WHERE Sailors.B >= Sailors.C 
 end 
-time spent： 306ms 
+time spent： 377ms 
 
  
 
  
 Query NO. 7 
-TIME START 1543968895337 
+TIME START 1543975007043 
 Read statement: SELECT Sailors.A FROM Sailors WHERE Sailors.B >= Sailors.C AND Sailors.B < Sailors.C 
 end 
-time spent： 254ms 
+time spent： 378ms 
 
  
 
  
 Query NO. 8 
-TIME START 1543968895597 
+TIME START 1543975007426 
 Read statement: SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G 
 end 
-time spent： 336ms 
+time spent： 447ms 
 
  
 
  
 Query NO. 9 
-TIME START 1543968895937 
+TIME START 1543975007934 
 Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D 
 end 
-time spent： 459ms 
+time spent： 552ms 
 
  
 
  
 Query NO. 10 
-TIME START 1543968896417 
+TIME START 1543975008493 
 Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D AND Sailors.B < 150 
 end 
-time spent： 24552ms 
+time spent： 25512ms 
 
  
 
  
 Query NO. 11 
-TIME START 1543968920972 
+TIME START 1543975034013 
 Read statement: SELECT DISTINCT * FROM Sailors 
 end 
-time spent： 60ms 
-
- 
-
- 
-Query NO. 12 
-TIME START 1543968921055 
-Read statement: SELECT * FROM Sailors AS S1, Sailors AS S2 WHERE S1.A < S2.A 
+time spent： 95ms 
