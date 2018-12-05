@@ -3,5 +3,8 @@
  
 DupElim 
 --Project[*] 
-----TableScan[Reserves] 
-----TableScan[Sailors] 
+---SMJ[Sailors.A = Reserves.G] 
+----ExternalSort[Reserves.G] 
+-----TableScan[Reserves] 
+----ExternalSort[Sailors.A] 
+-----TableScan[Sailors] 

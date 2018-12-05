@@ -1,4 +1,9 @@
-TIME START 1543970678926 
+
+ 
+
+ 
+Query NO. 1 
+TIME START 1543975145254 
 Read statement: SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G 
 end 
-time spent： 370ms 
+time spent： 279ms 
