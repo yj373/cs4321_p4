@@ -1,12 +1,4 @@
-TIME START 1543806500276 
-Read statement: SELECT * FROM Sailors AS S WHERE S.A < 10 
+TIME START 1543970678926 
+Read statement: SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G 
 end 
-time spent： 103ms 
-TIME START 1543806500380 
-Read statement: SELECT * FROM Boats AS B WHERE B.D < 10 
-end 
-time spent： 12ms 
-TIME START 1543806500394 
-Read statement: SELECT * FROM Reserves AS R WHERE R.G < 10 
-end 
-time spent： 7ms 
+time spent： 370ms 

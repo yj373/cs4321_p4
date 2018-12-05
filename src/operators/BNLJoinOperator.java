@@ -37,7 +37,7 @@ public class BNLJoinOperator extends JoinOperator{
 	private boolean reFillBuffer;
 	/*check whether to read a new inner tuple or not*/
 	private boolean needInnerTuple;
-	/*check whether a block left for outer reltion */
+	/*check whether a block left for outer relation */
 	private boolean blockLeft;
 	/*maximum tuples in the current block*/
 	private int maxTupleNumber;
