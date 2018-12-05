@@ -2,24 +2,6 @@
 
  
 DupElim 
--Sort[S.A] 
---Project[S.A,R.G] 
----Join[R.H <> B.D]
-[[S.A, B.D,], equals null, min null, max null]
-[[R.H,], equals null, min null, max 99]
-[[S.B, R.G,], equals null, min null, max null] 
-----Leaf[Sailors] 
-----Select[R.H <= 99]
------Leaf[Reserves] 
-----Leaf[Boats] 
-
- 
-
- 
-**************************************Query************************************************ 
-
- 
-DupElim 
 -Sort[] 
 --Project[*] 
 ---Join 
@@ -140,9 +122,9 @@ DupElim
 -Sort[] 
 --Project[*] 
 ---Join
-[[Sailors.B,], equals null, min null, max 149]
+[[Sailors.A, Reserves.G,], equals null, min null, max null]
 [[Reserves.H, Boats.D,], equals null, min null, max null]
-[[Sailors.A, Reserves.G,], equals null, min null, max null] 
+[[Sailors.B,], equals null, min null, max 149] 
 ----Select[Sailors.B <= 149]
 -----Leaf[Sailors] 
 ----Leaf[Reserves] 
@@ -172,51 +154,5 @@ DupElim
 ---Join[S1.A < S2.A] 
 ----Leaf[Sailors] 
 ----Leaf[Sailors] 
-
- 
-
- 
-**************************************Query************************************************ 
-
- 
-DupElim 
--Sort[B.D] 
---Project[B.F,B.D] 
----Join 
-----Leaf[Boats] 
-
- 
-
- 
-**************************************Query************************************************ 
-
- 
-DupElim 
--Sort[S.C] 
---Project[*] 
----Join
-[[S.A, R.G,], equals null, min null, max null]
-[[R.H, B.D,], equals null, min null, max null] 
-----Leaf[Sailors] 
-----Leaf[Reserves] 
-----Leaf[Boats] 
-
- 
-
- 
-**************************************Query************************************************ 
-
- 
-DupElim 
--Sort[S.C] 
---Project[*] 
----Join
-[[S.A, R.G,], equals null, min null, max null]
-[[R.H, B.D,], equals null, min null, max null] 
-----Leaf[Sailors] 
-----Leaf[Reserves] 
-----Leaf[Boats] 
-
- 
 
  

@@ -54,7 +54,7 @@ public class PhysicalPlanVisitor {
 	private Map<String, Integer> outputSizeMap;//Store the output size after selection (in tuples)
 	private int queryNum;
 	//private int joinType=0; // 0: TNLJ, 1: BNLJ, 2: SMJ
-	private int sortType=0; // 0: in-memory, 1: external
+	private int sortType = 0; // 0: in-memory, 1: external
 	//private int indexState=0; // 0: full-scan, 1: use indexes 
 	private int bnljBufferSize = 5;//use 5 pages for BNLJ
 	private int exSortBufferSize = 6;//use 6 pages for external sort

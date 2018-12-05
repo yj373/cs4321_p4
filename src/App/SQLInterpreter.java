@@ -189,7 +189,10 @@ public class SQLInterpreter {
 			while ((statement = parser.Statement()) != null) {
 
 				/*calculate spend time*/
-				long startTime=System.currentTimeMillis();    
+				long startTime=System.currentTimeMillis(); 
+				GlobalLogger.getLogger().info("\n");
+				GlobalLogger.getLogger().info("\n");
+				GlobalLogger.getLogger().info("Query NO. " + index);
 				GlobalLogger.getLogger().info("TIME START " + startTime);
 				long endTime = 0;
 
@@ -216,7 +219,7 @@ public class SQLInterpreter {
 					lOp.accept(pv);
 					root = pv.getPhysicalRoot();
 
-					/* print logical plan*/
+					/* print physical plan*/
 
 					writePhysicalPlan (root);
 
