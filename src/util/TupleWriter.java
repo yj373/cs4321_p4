@@ -134,7 +134,7 @@ public class TupleWriter {
 	 * This method is a constructor which is to
 	 * init file path and related field
 	 * 
-	 * @param path absolute lath of file
+	 * @param path absolute path of file
 	 * 
 	 */
 

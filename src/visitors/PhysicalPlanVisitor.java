@@ -28,6 +28,7 @@ import net.sf.jsqlparser.statement.select.SelectItem;
 import operators.BNLJoinOperator;
 import operators.DuplicateEliminationOperator;
 import operators.ExternalSortOperator;
+import operators.HashJoinOperator;
 import operators.InMemSortOperator;
 import operators.IndexScanOperator;
 import operators.JoinOperator;
@@ -212,6 +213,7 @@ public class PhysicalPlanVisitor {
 		expr.accept(eev);
 		if (eev.isEqal()) {
 			SMJoinOperator join = new SMJoinOperator(left, right, expr);
+			
 			if (left != null) {
 				Operator originalLeft = left;
 				//left = new ExternalSortOperator(queryNum, exSortBufferSize, join3.getLeftSortColumns(), originalLeft.getSchema(), originalLeft);
@@ -223,6 +225,8 @@ public class PhysicalPlanVisitor {
 				right = new V2ExternalSortOperator(queryNum, exSortBufferSize, join.getRightSortColumns(), originalRight.getSchema(), originalRight);		
 
 			}
+			
+		
 			join.setLeftChild(left);
 			join.setRightChild(right);
 			return join;

@@ -12,6 +12,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="/Users/ruoxuanxu/Desktop/cs 5321/p4/cs4321_p4/lib/jsqlparser.jar"/>
+	<classpathentry kind="lib" path="lib/jsqlparser.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
