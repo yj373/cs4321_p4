@@ -16,6 +16,7 @@ import data.Dynamic_properties;
 import data.TablePair;
 import data.TableStat;
 import data.UfCollection;
+import data.UfElement;
 import logicalOperators.LogicalDuplicateEliminationOperator;
 import logicalOperators.LogicalJoinOperator;
 import logicalOperators.LogicalOperator;
@@ -55,6 +56,7 @@ public class PhysicalPlanVisitor {
 	private LinkedList<String> tableNames;//Store names of joined tables 
 	private LinkedList<String> tableAliases;//Store aliases of joined tables
 	private Map<String, Integer> outputSizeMap;//Store the output size after selection (in tuples)
+	private Map<String, Map<String, Long>> vMap;
 	private int queryNum;
 	//private int joinType=0; // 0: TNLJ, 1: BNLJ, 2: SMJ
 	private int sortType = 0; // 0: in-memory, 1: external
@@ -71,6 +73,7 @@ public class PhysicalPlanVisitor {
 		this.tableAliases = new LinkedList<String>();
 		this.tableNames = new LinkedList<String>();
 		this.outputSizeMap = new HashMap<String, Integer>();
+		this.vMap = new HashMap<String, Map<String, Long>>();
 		this.queryNum = qN;
 		this.ufc = u;
 	}
@@ -96,7 +99,29 @@ public class PhysicalPlanVisitor {
 		String tableName = scOp.getTableName();
 		String tableAliase = scOp.getTableAliase();
 		Map<String, TableStat> statistics = DataBase.getInstance().getStatistics();
-		TableStat rightStatistics = statistics.get(tableName);
+		
+		TableStat tableStatistics = statistics.get(tableName);
+		List<Long> lBounds = tableStatistics.lowerBound;
+		List<Long> uBounds = tableStatistics.upperBound;
+		Map<String, Long> currVMap = new HashMap<String, Long>();
+		Map<String, UfElement> ufcMap = ufc.getMap();
+		
+		for (int i = 0; i < scOp.getAttributes().size(); i ++) {
+			String attr = scOp.getAttributes().get(i);
+			StringBuilder k = new StringBuilder();
+			k.append(tableAliase);
+			k.append(".");
+			k.append(attr);
+			UfElement uEle = ufcMap.get(k.toString());
+			Long lower = (uEle == null || uEle.getLowerBound() == null) ? lBounds.get(i) : uEle.getLowerBound();
+			Long upper = (uEle == null || uEle.getUpperBound() == null) ? uBounds.get(i) : uEle.getUpperBound();
+			long v = Math.min(upper-lower+1, tableStatistics.tupleNumber);
+			StringBuilder key = new StringBuilder();
+			key.append(tableAliase);
+			key.append(".");
+			key.append(attr);
+			currVMap.put(key.toString(), v);
+		}
 		
 		Expression expression = scOp.getCondition();
 		SelectDeterminator sd = new SelectDeterminator(scOp, this.ufc);
@@ -118,6 +143,7 @@ public class PhysicalPlanVisitor {
 			tableNames.add(tableName);
 			tableAliases.add(tableAliase);
 			outputSizeMap.put(tableAliase, output);
+			vMap.put(tableAliase, currVMap);
 			root = scan;
 		}else {
 			ScanOperator scan = new ScanOperator(tableName, tableAliase, expression);
@@ -125,6 +151,7 @@ public class PhysicalPlanVisitor {
 			tableNames.add(tableName);
 			tableAliases.add(tableAliase);
 			outputSizeMap.put(tableAliase, output);
+			vMap.put(tableAliase, currVMap);
 			root = scan;
 		}
 		
@@ -145,7 +172,7 @@ public class PhysicalPlanVisitor {
 		}
 		
 		//Determine the join order
-		JoinOrderDeterminator jd = new JoinOrderDeterminator(this.tableNames, this.tableAliases, this.outputSizeMap, this.ufc);
+		JoinOrderDeterminator jd = new JoinOrderDeterminator(this.tableNames, this.tableAliases, this.outputSizeMap, this.ufc, this.vMap);
 		List<Integer> joinOrder = jd.getOrder();
 		LinkedList<Operator> tempChildList = new LinkedList<Operator>();
 		Set<String> tempAllTable = new HashSet<String>();

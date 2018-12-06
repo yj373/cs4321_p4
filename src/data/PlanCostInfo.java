@@ -9,9 +9,9 @@ public class PlanCostInfo {
 	public int outputSize;
 	public String bestOrder;
 	public Set<String> allTables;//All the joined tables (aliases);
-	public Map<String, Integer> vMap;
+	public Map<String, Long> vMap;
 	
-	public PlanCostInfo(int c, int o, String order, Set<String> tableAliases, Map<String, Integer> v) {
+	public PlanCostInfo(int c, int o, String order, Set<String> tableAliases, Map<String, Long> v) {
 		this.cost = c;
 		this.outputSize = o;
 		this.bestOrder = order;
