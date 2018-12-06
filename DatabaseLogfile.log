@@ -3,5 +3,277 @@
 
  
 Query NO. 1 
+<<<<<<< HEAD
 TIME START 1544110501609 
 Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND S.SV > 8 AND C.CV < 19 AND D.DV = 11 AND P.PV <> 13 
+=======
+<<<<<<< HEAD
+TIME START 1544061492270 
+Read statement: SELECT * FROM Sailors 
+end 
+time spent： 301ms 
+=======
+TIME START 1544067596014 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND D.DV <= 37 AND S.SV <= 42 AND C.CV = 14 AND P.PV >= 32 
+java.lang.ArithmeticException: / by zero 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+
+ 
+
+ 
+Query NO. 2 
+<<<<<<< HEAD
+TIME START 1544061492582 
+Read statement: SELECT Sailors.A FROM Sailors 
+end 
+time spent： 35ms 
+=======
+TIME START 1544067596525 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND S.SV > 8 AND C.CV < 19 AND D.DV = 11 AND P.PV <> 13 
+end 
+time spent： 33722314ms 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+
+ 
+
+ 
+Query NO. 3 
+<<<<<<< HEAD
+TIME START 1544061492623 
+Read statement: SELECT Boats.F, Boats.D FROM Boats 
+end 
+time spent： 54ms 
+=======
+TIME START 1544101318848 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND D.DV <> 23 AND C.CV <> 28 AND S.SV >= 45 AND P.PV >= 3 
+end 
+time spent： 77ms 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+
+ 
+
+ 
+Query NO. 4 
+<<<<<<< HEAD
+TIME START 1544061492684 
+Read statement: SELECT Reserves.G, Reserves.H FROM Reserves 
+end 
+time spent： 20ms 
+=======
+TIME START 1544101318930 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND S.SV <= 34 AND P.PV = 32 AND D.DV <> 44 AND C.CV = 16 
+java.lang.ArithmeticException: / by zero 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+
+ 
+
+ 
+Query NO. 5 
+<<<<<<< HEAD
+TIME START 1544061492711 
+Read statement: SELECT * FROM Sailors WHERE Sailors.B >= Sailors.C 
+end 
+time spent： 41ms 
+=======
+TIME START 1544101318985 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND D.DV = 48 AND P.PV > 3 AND S.SV <> 37 AND C.CV <= 17 
+end 
+time spent： 140ms 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+
+ 
+
+ 
+Query NO. 6 
+<<<<<<< HEAD
+TIME START 1544061492757 
+Read statement: SELECT Sailors.A FROM Sailors WHERE Sailors.B >= Sailors.C 
+end 
+time spent： 38ms 
+
+ 
+
+ 
+Query NO. 7 
+TIME START 1544061492804 
+Read statement: SELECT Sailors.A FROM Sailors WHERE Sailors.B >= Sailors.C AND Sailors.B < Sailors.C 
+end 
+time spent： 34ms 
+
+ 
+
+ 
+Query NO. 8 
+TIME START 1544061492842 
+Read statement: SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G 
+end 
+time spent： 299ms 
+=======
+TIME START 1544101319131 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND D.DV = 43 AND C.CV <> 34 AND S.SV > 24 AND P.PV > 23 
+end 
+time spent： 43ms 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+
+ 
+
+ 
+<<<<<<< HEAD
+Query NO. 9 
+TIME START 1544061493166 
+Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D 
+end 
+time spent： 1263ms 
+=======
+Query NO. 7 
+TIME START 1544101319177 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND D.DV <> 12 AND P.PV <> 21 AND C.CV >= 47 AND S.SV <> 7 
+end 
+time spent： 71ms 
+
+ 
+
+ 
+Query NO. 8 
+TIME START 1544101319251 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND S.SV < 25 AND C.CV = 48 AND D.DV > 10 AND P.PV = 38 
+java.lang.ArithmeticException: / by zero 
+
+ 
+
+ 
+Query NO. 9 
+TIME START 1544101319294 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND P.PV < 47 AND D.DV = 18 AND S.SV <= 50 AND C.CV <> 41 
+java.lang.ArithmeticException: / by zero 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+
+ 
+
+ 
+Query NO. 10 
+<<<<<<< HEAD
+TIME START 1544061494663 
+Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D AND Sailors.B < 150 
+end 
+time spent： 15697ms 
+=======
+TIME START 1544101319314 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND S.SV <= 13 AND P.PV < 46 AND C.CV <> 21 AND D.DV < 27 
+end 
+time spent： 64ms 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+
+ 
+
+ 
+Query NO. 11 
+<<<<<<< HEAD
+TIME START 1544061510539 
+Read statement: SELECT DISTINCT * FROM Sailors 
+end 
+time spent： 17ms 
+=======
+TIME START 1544101319390 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND D.DV < 43 AND C.CV = 12 AND P.PV = 31 AND S.SV < 16 
+java.lang.ArithmeticException: / by zero 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+
+ 
+
+ 
+Query NO. 12 
+<<<<<<< HEAD
+TIME START 1544061510562 
+Read statement: SELECT * FROM Sailors AS S1, Sailors AS S2 WHERE S1.A < S2.A 
+end 
+time spent： 8263ms 
+=======
+TIME START 1544101319429 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND C.CV < 44 AND P.PV > 15 AND D.DV <> 49 AND S.SV < 20 
+end 
+time spent： 64ms 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+
+ 
+
+ 
+Query NO. 13 
+<<<<<<< HEAD
+TIME START 1544061519984 
+Read statement: SELECT B.F, B.D FROM Boats AS B ORDER BY B.D 
+end 
+time spent： 19ms 
+=======
+TIME START 1544101319495 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND D.DV = 13 AND P.PV <> 37 AND S.SV >= 26 AND C.CV <> 33 
+java.lang.ArithmeticException: / by zero 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+
+ 
+
+ 
+Query NO. 14 
+<<<<<<< HEAD
+TIME START 1544061520007 
+Read statement: SELECT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
+end 
+time spent： 928ms 
+=======
+TIME START 1544101319512 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND P.PV <> 20 AND C.CV < 21 AND S.SV <= 46 AND D.DV = 8 
+end 
+time spent： 82ms 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+
+ 
+
+ 
+Query NO. 15 
+<<<<<<< HEAD
+TIME START 1544061520986 
+Read statement: SELECT DISTINCT * FROM Sailors AS S, Reserves AS R, Boats AS B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C 
+end 
+time spent： 1099ms 
+=======
+TIME START 1544101319596 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND S.SV <> 11 AND C.CV >= 12 AND D.DV >= 3 AND P.PV < 8 
+end 
+time spent： 65ms 
+
+ 
+
+ 
+Query NO. 16 
+TIME START 1544101319663 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND D.DV < 34 AND S.SV < 48 AND P.PV <= 12 AND C.CV <> 14 
+end 
+time spent： 69ms 
+
+ 
+
+ 
+Query NO. 17 
+TIME START 1544101319736 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND S.SV >= 3 AND C.CV < 21 AND D.DV >= 39 AND P.PV >= 2 
+end 
+time spent： 37ms 
+
+ 
+
+ 
+Query NO. 18 
+TIME START 1544101319777 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND D.DV = 12 AND C.CV < 27 AND P.PV > 33 AND S.SV < 38 
+end 
+time spent： 60ms 
+
+ 
+
+ 
+Query NO. 19 
+TIME START 1544101319841 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND S.SV > 11 AND D.DV <= 8 AND C.CV <> 1 AND P.PV = 36 
+java.lang.ArithmeticException: / by zero 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
+>>>>>>> f36f1673c858a07b6d7571348c85f202f55a77ef
