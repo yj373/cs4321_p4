@@ -3,6 +3,7 @@
  
 DupElim 
 --Project[*] 
+<<<<<<< HEAD
 ---TableScan[Sailors] 
 **************************************Physical Plan************************************************ 
 
@@ -22,42 +23,140 @@ DupElim
 DupElim 
 --Project[Reserves.G,Reserves.H] 
 ---TableScan[Reserves] 
+=======
+---SMJ[L.CKEY = C.CKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND L.PKEY = P.PKEY] 
+----ExternalSort[C.CKEY,S.SKEY,D.DKEY,P.PKEY] 
+-----BNLJ 
+------BNLJ 
+-------BNLJ 
+--------Select[C.CV <= 18]
+---------TableScan[CUSTOMER] 
+--------Select[P.PV <> 13]
+---------TableScan[PART] 
+-------Select[S.SV >= 9]
+--------TableScan[SUPPLIER] 
+------Select[D.DV = 11]
+-------TableScan[DATE] 
+----ExternalSort[L.CKEY,L.SKEY,L.DKEY,L.PKEY] 
+-----TableScan[LINEORDER] 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
 **************************************Physical Plan************************************************ 
 
  
 DupElim 
 --Project[*] 
+<<<<<<< HEAD
 ---Select[Sailors.B >= Sailors.C]
 ----TableScan[Sailors] 
+=======
+---SMJ[L.CKEY = C.CKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND L.PKEY = P.PKEY] 
+----ExternalSort[C.CKEY,S.SKEY,D.DKEY,P.PKEY] 
+-----BNLJ 
+------BNLJ 
+-------BNLJ 
+--------Select[C.CV <> 28]
+---------TableScan[CUSTOMER] 
+--------Select[P.PV >= 3]
+---------TableScan[PART] 
+-------Select[S.SV >= 45]
+--------TableScan[SUPPLIER] 
+------Select[D.DV <> 23]
+-------TableScan[DATE] 
+----ExternalSort[L.CKEY,L.SKEY,L.DKEY,L.PKEY] 
+-----TableScan[LINEORDER] 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
 **************************************Physical Plan************************************************ 
 
  
 DupElim 
+<<<<<<< HEAD
 --Project[Sailors.A] 
 ---Select[Sailors.B >= Sailors.C]
 ----TableScan[Sailors] 
+=======
+--Project[*] 
+---SMJ[L.CKEY = C.CKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND L.PKEY = P.PKEY] 
+----ExternalSort[C.CKEY,S.SKEY,D.DKEY,P.PKEY] 
+-----BNLJ 
+------BNLJ 
+-------BNLJ 
+--------Select[C.CV <= 17]
+---------TableScan[CUSTOMER] 
+--------Select[P.PV >= 4]
+---------TableScan[PART] 
+-------Select[S.SV <> 37]
+--------TableScan[SUPPLIER] 
+------Select[D.DV = 48]
+-------TableScan[DATE] 
+----ExternalSort[L.CKEY,L.SKEY,L.DKEY,L.PKEY] 
+-----TableScan[LINEORDER] 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
 **************************************Physical Plan************************************************ 
 
  
 DupElim 
+<<<<<<< HEAD
 --Project[Sailors.A] 
 ---Select[Sailors.B >= Sailors.C,Sailors.B < Sailors.C]
 ----TableScan[Sailors] 
+=======
+--Project[*] 
+---SMJ[L.CKEY = C.CKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND L.PKEY = P.PKEY] 
+----ExternalSort[C.CKEY,S.SKEY,D.DKEY,P.PKEY] 
+-----BNLJ 
+------BNLJ 
+-------BNLJ 
+--------Select[C.CV <> 34]
+---------TableScan[CUSTOMER] 
+--------Select[P.PV >= 24]
+---------TableScan[PART] 
+-------Select[S.SV >= 25]
+--------TableScan[SUPPLIER] 
+------Select[D.DV = 43]
+-------TableScan[DATE] 
+----ExternalSort[L.CKEY,L.SKEY,L.DKEY,L.PKEY] 
+-----TableScan[LINEORDER] 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
 **************************************Physical Plan************************************************ 
 
  
 DupElim 
 --Project[*] 
+<<<<<<< HEAD
 ---SMJ[Sailors.A = Reserves.G] 
 ----ExternalSort[Reserves.G] 
 -----TableScan[Reserves] 
 ----ExternalSort[Sailors.A] 
 -----TableScan[Sailors] 
+=======
+---SMJ[L.CKEY = C.CKEY] 
+----ExternalSort[L.CKEY] 
+-----SMJ[L.DKEY = D.DKEY] 
+------ExternalSort[L.DKEY] 
+-------SMJ[L.SKEY = S.SKEY] 
+--------ExternalSort[L.SKEY] 
+---------SMJ[L.PKEY = P.PKEY] 
+----------ExternalSort[L.PKEY] 
+-----------TableScan[LINEORDER] 
+----------ExternalSort[P.PKEY] 
+-----------Select[P.PV <> 21]
+------------TableScan[PART] 
+--------ExternalSort[S.SKEY] 
+---------Select[S.SV <> 7]
+----------TableScan[SUPPLIER] 
+------ExternalSort[D.DKEY] 
+-------Select[D.DV <> 12]
+--------TableScan[DATE] 
+----ExternalSort[C.CKEY] 
+-----Select[C.CV >= 47]
+------TableScan[CUSTOMER] 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
 **************************************Physical Plan************************************************ 
 
  
 DupElim 
 --Project[*] 
+<<<<<<< HEAD
 ---SMJ[Sailors.A = Reserves.G] 
 ----ExternalSort[Reserves.G] 
 -----SMJ[Reserves.H = Boats.D] 
@@ -67,11 +166,29 @@ DupElim
 -------TableScan[Boats] 
 ----ExternalSort[Sailors.A] 
 -----TableScan[Sailors] 
+=======
+---SMJ[L.SKEY = S.SKEY AND L.CKEY = C.CKEY AND L.DKEY = D.DKEY AND L.PKEY = P.PKEY] 
+----ExternalSort[S.SKEY,C.CKEY,D.DKEY,P.PKEY] 
+-----BNLJ 
+------BNLJ 
+-------BNLJ 
+--------Select[C.CV <> 21]
+---------TableScan[CUSTOMER] 
+--------Select[P.PV <= 45]
+---------TableScan[PART] 
+-------Select[S.SV <= 13]
+--------TableScan[SUPPLIER] 
+------Select[D.DV <= 26]
+-------TableScan[DATE] 
+----ExternalSort[L.SKEY,L.CKEY,L.DKEY,L.PKEY] 
+-----TableScan[LINEORDER] 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
 **************************************Physical Plan************************************************ 
 
  
 DupElim 
 --Project[*] 
+<<<<<<< HEAD
 ---SMJ[Sailors.A = Reserves.G AND Reserves.H = Boats.D] 
 ----ExternalSort[Sailors.A,Boats.D] 
 -----BNLJ 
@@ -80,31 +197,104 @@ DupElim
 ------TableScan[Boats] 
 ----ExternalSort[Reserves.G,Reserves.H] 
 -----TableScan[Reserves] 
+=======
+---SMJ[L.CKEY = C.CKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND L.PKEY = P.PKEY] 
+----ExternalSort[C.CKEY,S.SKEY,D.DKEY,P.PKEY] 
+-----BNLJ 
+------BNLJ 
+-------BNLJ 
+--------Select[C.CV <= 43]
+---------TableScan[CUSTOMER] 
+--------Select[P.PV >= 16]
+---------TableScan[PART] 
+-------Select[S.SV <= 19]
+--------TableScan[SUPPLIER] 
+------Select[D.DV <> 49]
+-------TableScan[DATE] 
+----ExternalSort[L.CKEY,L.SKEY,L.DKEY,L.PKEY] 
+-----TableScan[LINEORDER] 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
 **************************************Physical Plan************************************************ 
 
  
 DupElim 
 --Project[*] 
+<<<<<<< HEAD
 ---TableScan[Sailors] 
+=======
+---SMJ[L.CKEY = C.CKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND L.PKEY = P.PKEY] 
+----ExternalSort[C.CKEY,S.SKEY,D.DKEY,P.PKEY] 
+-----BNLJ 
+------BNLJ 
+-------BNLJ 
+--------Select[C.CV <= 20]
+---------TableScan[CUSTOMER] 
+--------Select[P.PV <> 20]
+---------TableScan[PART] 
+-------Select[S.SV <= 46]
+--------TableScan[SUPPLIER] 
+------Select[D.DV = 8]
+-------TableScan[DATE] 
+----ExternalSort[L.CKEY,L.SKEY,L.DKEY,L.PKEY] 
+-----TableScan[LINEORDER] 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
 **************************************Physical Plan************************************************ 
 
  
 DupElim 
 --Project[*] 
+<<<<<<< HEAD
 ---BNLJ[S1.A < S2.A] 
 ----TableScan[Sailors] 
 ----TableScan[Sailors] 
+=======
+---SMJ[L.CKEY = C.CKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND L.PKEY = P.PKEY] 
+----ExternalSort[C.CKEY,S.SKEY,D.DKEY,P.PKEY] 
+-----BNLJ 
+------BNLJ 
+-------BNLJ 
+--------Select[C.CV >= 12]
+---------TableScan[CUSTOMER] 
+--------Select[P.PV <= 7]
+---------TableScan[PART] 
+-------Select[S.SV <> 11]
+--------TableScan[SUPPLIER] 
+------Select[D.DV >= 3]
+-------TableScan[DATE] 
+----ExternalSort[L.CKEY,L.SKEY,L.DKEY,L.PKEY] 
+-----TableScan[LINEORDER] 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
 **************************************Physical Plan************************************************ 
 
  
 DupElim 
+<<<<<<< HEAD
 --Project[B.F,B.D] 
 ---TableScan[Boats] 
+=======
+--Project[*] 
+---SMJ[L.SKEY = S.SKEY AND L.CKEY = C.CKEY AND L.DKEY = D.DKEY AND L.PKEY = P.PKEY] 
+----ExternalSort[S.SKEY,C.CKEY,D.DKEY,P.PKEY] 
+-----BNLJ 
+------BNLJ 
+-------BNLJ 
+--------Select[C.CV <> 14]
+---------TableScan[CUSTOMER] 
+--------Select[P.PV <= 12]
+---------TableScan[PART] 
+-------Select[S.SV <= 47]
+--------TableScan[SUPPLIER] 
+------Select[D.DV <= 33]
+-------TableScan[DATE] 
+----ExternalSort[L.SKEY,L.CKEY,L.DKEY,L.PKEY] 
+-----TableScan[LINEORDER] 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
 **************************************Physical Plan************************************************ 
 
  
 DupElim 
 --Project[*] 
+<<<<<<< HEAD
 ---SMJ[S.A = R.G] 
 ----ExternalSort[R.G] 
 -----SMJ[R.H = B.D] 
@@ -114,11 +304,29 @@ DupElim
 -------TableScan[Boats] 
 ----ExternalSort[S.A] 
 -----TableScan[Sailors] 
+=======
+---SMJ[L.SKEY = S.SKEY AND L.CKEY = C.CKEY AND L.DKEY = D.DKEY AND L.PKEY = P.PKEY] 
+----ExternalSort[S.SKEY,C.CKEY,D.DKEY,P.PKEY] 
+-----BNLJ 
+------BNLJ 
+-------BNLJ 
+--------Select[C.CV <= 20]
+---------TableScan[CUSTOMER] 
+--------Select[P.PV >= 2]
+---------TableScan[PART] 
+-------Select[S.SV >= 3]
+--------TableScan[SUPPLIER] 
+------Select[D.DV >= 39]
+-------TableScan[DATE] 
+----ExternalSort[L.SKEY,L.CKEY,L.DKEY,L.PKEY] 
+-----TableScan[LINEORDER] 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c
 **************************************Physical Plan************************************************ 
 
  
 DupElim 
 --Project[*] 
+<<<<<<< HEAD
 ---SMJ[S.A = R.G] 
 ----ExternalSort[R.G] 
 -----SMJ[R.H = B.D] 
@@ -128,3 +336,20 @@ DupElim
 -------TableScan[Boats] 
 ----ExternalSort[S.A] 
 -----TableScan[Sailors] 
+=======
+---SMJ[L.CKEY = C.CKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND L.PKEY = P.PKEY] 
+----ExternalSort[C.CKEY,S.SKEY,D.DKEY,P.PKEY] 
+-----BNLJ 
+------BNLJ 
+-------BNLJ 
+--------Select[C.CV <= 26]
+---------TableScan[CUSTOMER] 
+--------Select[P.PV >= 34]
+---------TableScan[PART] 
+-------Select[S.SV <= 37]
+--------TableScan[SUPPLIER] 
+------Select[D.DV = 12]
+-------TableScan[DATE] 
+----ExternalSort[L.CKEY,L.SKEY,L.DKEY,L.PKEY] 
+-----TableScan[LINEORDER] 
+>>>>>>> 4bc279a7d0d54e9f5c755e72dc30072f9b2b7c1c

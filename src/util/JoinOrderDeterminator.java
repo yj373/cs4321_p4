@@ -36,8 +36,8 @@ public class JoinOrderDeterminator {
 		tableNames = tNames;
 		for (String key : ufcMap.keySet()) {
 			UfElement uEle = ufcMap.get(key);
-			if(uEle.getEqualityConstraint()!=null) {
-				String[] attr = key.split(".");
+			if(uEle.getAttributes().size() > 1) {
+				String[] attr = key.split("\\.");
 				if(!ufcDirec.containsKey(attr[0])) {
 					Set<String> attrs = new HashSet<String>();
 					attrs.add(key);
@@ -160,7 +160,7 @@ public class JoinOrderDeterminator {
 					UfElement uEle = ufcMap.get(rightEqualAttr);
 					List<String> leftEqualAttrs = uEle.getAttributes();//All the attributes equal to this target right attribute
 					for (String leftEqualAttr : leftEqualAttrs) {
-						String[] splittedAttr = leftEqualAttr.split(".");
+						String[] splittedAttr = leftEqualAttr.split("\\.");
 						if (leftAllTables.contains(splittedAttr[0])) {
 							rightRemoveList.add(rightEqualAttr);
 							leftRemoveList.add(leftEqualAttr);

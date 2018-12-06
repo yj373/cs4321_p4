@@ -1,0 +1,26 @@
+**************************************Query************************************************ 
+
+ 
+DupElim 
+-Sort[] 
+--Project[*] 
+---Join
+[[L.CKEY, C.CKEY,], equals null, min null, max null]
+[[S.SV,], equals null, min null, max 42]
+[[C.CV,], equals 14, min 14, max 14]
+[[D.DV,], equals null, min null, max 37]
+[[P.PV,], equals null, min 32, max null]
+[[L.SKEY, S.SKEY,], equals null, min null, max null]
+[[L.DKEY, D.DKEY,], equals null, min null, max null]
+[[L.PKEY, P.PKEY,], equals null, min null, max null] 
+----Leaf[LINEORDER] 
+----Select[C.CV = 14]
+-----Leaf[CUSTOMER] 
+----Select[P.PV >= 32]
+-----Leaf[PART] 
+----Select[S.SV <= 42]
+-----Leaf[SUPPLIER] 
+----Select[D.DV <= 37]
+-----Leaf[DATE] 
+
+ 

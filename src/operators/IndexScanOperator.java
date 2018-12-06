@@ -17,7 +17,7 @@ import data.Tuple;
 import net.sf.jsqlparser.expression.Expression;
 import util.PhysicalLogger;
 import util.TupleReader;
-
+import java.nio.Buffer;
 /**
  * This is the class of Physical IndexScanOperator. When constructing the physical query plan from
  * logical query plan, we check if the scan conditions of the logical scan operator are suitable for
@@ -126,9 +126,9 @@ public class IndexScanOperator extends Operator{
 			if (fcin == null || !fcin.isOpen()) {
 				/*get the channel of source file*/ 
 				fcin = new RandomAccessFile(indexFile, "r").getChannel();
-				buffer.clear();
+				((Buffer)buffer).clear();
 				fcin.read(buffer); 
-				buffer.clear();
+				((Buffer)buffer).clear();
 				rootIndex = buffer.getInt();
 				leafNum = buffer.getInt();
 			} 
@@ -152,12 +152,12 @@ public class IndexScanOperator extends Operator{
 	 */
 	private int indexSearch(int key, int address) throws IOException {
 		fcin.position(address * BUFFER_SIZE);
-		buffer.clear();
+		((Buffer)buffer).clear();
 		fcin.read(buffer);
-		buffer.clear();
+		((Buffer)buffer).clear();
 		// Base Case: if the page is a leaf page
 		if (buffer.getInt() == 0) {
-			buffer.clear();
+			((Buffer)buffer).clear();
 			return address;
 		} else {
 		// if this page is index page
@@ -207,9 +207,9 @@ public class IndexScanOperator extends Operator{
 			}
 		} 
 		if (numDataEntries == 0) {  // end of one leaf page
-			buffer.clear();
+			((Buffer)buffer).clear();
 			fcin.read(buffer);
-			buffer.clear();
+			((Buffer)buffer).clear();
 			return readNextTupleIDQueue();
 		} 
 		// read and check data entries
@@ -252,9 +252,9 @@ public class IndexScanOperator extends Operator{
 					// Here is the first time we call "getNextTuple()"
 					int leafAddress = findLeafPage(lowerBound);  // at this time leafNum is assigned with non-negative value
 					fcin.position(leafAddress * BUFFER_SIZE);
-					buffer.clear();
+					((Buffer)buffer).clear();
 					fcin.read(buffer);	
-					buffer.clear();
+					((Buffer)buffer).clear();
 					queueOfTuples = readNextTupleIDQueue();
 				}  else if (queueOfTuples.isEmpty()) {
 					queueOfTuples = readNextTupleIDQueue();
@@ -274,9 +274,9 @@ public class IndexScanOperator extends Operator{
 				if (queueOfTuples == null) { // when queueOfTuples is not initialized
 					int leafAddress = findLeafPage(lowerBound);  // at this time leafNum is assigned with non-negative value
 					fcin.position(leafAddress * BUFFER_SIZE);
-					buffer.clear();
+					((Buffer)buffer).clear();
 					fcin.read(buffer);
-					buffer.clear();
+					((Buffer)buffer).clear();
 					queueOfTuples = readNextTupleIDQueue();
 					// during the initialization of queueOfTuples, if (queriedOfTuples is null) then no data entries will be qualified
 					// return null;
@@ -316,7 +316,7 @@ public class IndexScanOperator extends Operator{
 			if (fcin.isOpen()) {
 				fcin.close();
 			}
-			buffer.clear();
+			((Buffer)buffer).clear();
 			this.queueOfTuples = null;
 			this.leafNum = -1;
 			this.numDataEntries = 0;
