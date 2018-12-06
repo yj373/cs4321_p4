@@ -37,7 +37,7 @@ public class Dynamic_properties {
 		outputPath = p1;
 		tempPath = p2;
 		dataPath = inputPath + "/db/data/";
-		queryPath = inputPath + "/queries2.sql";
+		queryPath = inputPath + "/queries.sql";
 		schemaPath = inputPath + "/db/schema.txt";
 		configuePath = inputPath + "/plan_builder_config.txt";
 		indexInfoPath = inputPath + "/db/index_info.txt";

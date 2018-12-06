@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.List;
@@ -134,7 +135,7 @@ public class TupleWriter {
 	 * This method is a constructor which is to
 	 * init file path and related field
 	 * 
-	 * @param path absolute lath of file
+	 * @param path absolute path of file
 	 * 
 	 */
 
@@ -313,7 +314,7 @@ public class TupleWriter {
 
 		/*reset the position in buffer*/
 		
-		buffer.clear();
+		((Buffer)buffer).clear();
 		
 	   
 		

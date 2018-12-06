@@ -1,46 +1,7 @@
-TIME START 1543971294942 
-Read statement: SELECT * FROM Sailors 
-end 
-time spent： 931ms 
-TIME START 1543971295897 
-Read statement: SELECT Sailors.A FROM Sailors 
-end 
-time spent： 79ms 
-TIME START 1543971296189 
-Read statement: SELECT Boats.F, Boats.D FROM Boats 
-end 
-time spent： 292ms 
-TIME START 1543971296509 
-Read statement: SELECT Reserves.G, Reserves.H FROM Reserves 
-end 
-time spent： 40ms 
-TIME START 1543971296558 
-Read statement: SELECT * FROM Sailors WHERE Sailors.B >= Sailors.C 
-end 
-time spent： 69ms 
-TIME START 1543971296635 
-Read statement: SELECT Sailors.A FROM Sailors WHERE Sailors.B >= Sailors.C 
-end 
-time spent： 45ms 
-TIME START 1543971296691 
-Read statement: SELECT Sailors.A FROM Sailors WHERE Sailors.B >= Sailors.C AND Sailors.B < Sailors.C 
-end 
-time spent： 49ms 
-TIME START 1543971296807 
-Read statement: SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G 
-end 
-time spent： 400ms 
-TIME START 1543971297234 
-Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D 
-end 
-time spent： 643ms 
-TIME START 1543971297904 
-Read statement: SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D AND Sailors.B < 150 
-end 
-time spent： 28908ms 
-TIME START 1543971326822 
-Read statement: SELECT DISTINCT * FROM Sailors 
-end 
-time spent： 155ms 
-TIME START 1543971326987 
-Read statement: SELECT * FROM Sailors AS S1, Sailors AS S2 WHERE S1.A < S2.A 
+
+ 
+
+ 
+Query NO. 1 
+TIME START 1544063650223 
+Read statement: SELECT * FROM LINEORDER AS L, CUSTOMER AS C, PART AS P, SUPPLIER AS S, DATE AS D WHERE L.CKEY = C.CKEY AND L.PKEY = P.PKEY AND L.SKEY = S.SKEY AND L.DKEY = D.DKEY AND C.CV > 37 AND D.DV >= 4 AND S.SV <> 1 AND P.PV < 7 
