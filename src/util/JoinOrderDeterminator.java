@@ -92,6 +92,9 @@ public class JoinOrderDeterminator {
 	/*Building the cost map using buttom-up Dynamic Programming*/
 	private void buildCostMap(Map<String, PlanCostInfo> costMap, List<HashSet<String>> subsets) {
 		Map<String, Set<String>> tempDirc = this.ufcDirec;
+		for (String key : ufcDirec.keySet()) {
+			tempDirc.put(key, this.ufcDirec.get(key));
+		}
 		for (int i = 0; i < subsets.size(); i++) {
 			HashSet<String> keys = subsets.get(i);
 			for(String key : keys) {
@@ -146,8 +149,7 @@ public class JoinOrderDeterminator {
 			}
 			//Determine the output size of this order
 			Set<String> leftAllTables = leftPlanCost.allTables;
-			Set<String> allTables = leftAllTables;//All the tables that have been dealt with so far
-			allTables.add(rightAliase);
+			
 			int rightOutput = outputSizeMap.get(rightAliase);
 			int leftOutput = leftPlanCost.outputSize;
 			long denominator = 1;
@@ -173,7 +175,8 @@ public class JoinOrderDeterminator {
 						UfElement uEle = ufcMap.get(right);
 						String rightName = tableNames.get(tableAliases.indexOf(rightAliase));
 						TableStat rightStatistics = statistics.get(rightName);
-						int attrInd  = rightStatistics.columns.indexOf(right);
+						String rightStatisticsKey = right.split("\\.")[1];
+						int attrInd  = rightStatistics.columns.indexOf(rightStatisticsKey);
 						List<Long> lBounds = rightStatistics.lowerBound;
 						List<Long> uBounds = rightStatistics.upperBound;
 						//If the upper bound in the union-find is null, there is no constraint on this attribute.
@@ -192,6 +195,11 @@ public class JoinOrderDeterminator {
 					}
 				}
 			}
+			Set<String> allTables = new HashSet<String>();
+			for (String table: leftAllTables) {
+				allTables.add(table);
+			}
+			allTables.add(rightAliase);
 			int outputSize = (int)(leftOutput*rightOutput/denominator);
 			PlanCostInfo res = new PlanCostInfo(cost, outputSize, order, allTables);
 			return res;	

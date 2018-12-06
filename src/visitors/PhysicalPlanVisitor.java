@@ -11,8 +11,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import data.DataBase;
 import data.Dynamic_properties;
 import data.TablePair;
+import data.TableStat;
 import data.UfCollection;
 import logicalOperators.LogicalDuplicateEliminationOperator;
 import logicalOperators.LogicalJoinOperator;
@@ -93,6 +95,9 @@ public class PhysicalPlanVisitor {
 	public void visit(LogicalScanOperator scOp) {
 		String tableName = scOp.getTableName();
 		String tableAliase = scOp.getTableAliase();
+		Map<String, TableStat> statistics = DataBase.getInstance().getStatistics();
+		TableStat rightStatistics = statistics.get(tableName);
+		
 		Expression expression = scOp.getCondition();
 		SelectDeterminator sd = new SelectDeterminator(scOp, this.ufc);
 		String selectColumn = sd.selectColumn();
